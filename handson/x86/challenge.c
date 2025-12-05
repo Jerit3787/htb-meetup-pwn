@@ -2,7 +2,8 @@
 // Compile: gcc -m32 -fno-stack-protector -no-pie -o challenge challenge.c
 #include <stdio.h>
 #include <stdlib.h>
-
+// gets() removed from modern glibc, declare it manually
+extern char *gets(char *s);
 void win()
 {
     printf("\n🎉 Congratulations! You solved the x86 hands-on!\n");
