@@ -49,7 +49,7 @@ style: |
 
 05/12/2025
 
-![bg right:40%](image.png)
+![bg right:40%](images/htb.png)
 
 ---
 
@@ -62,7 +62,7 @@ style: |
 - Given a talk at HTB Meetup at UPM
 - https://www.danplace.tech
 
-![bg right:40%](me.jpg)
+![bg right:40%](images/me.jpg)
 
 ---
 
@@ -757,7 +757,7 @@ p.interactive()
 
 📺 **Pwn Playlist**: https://www.youtube.com/playlist?list=PLHUKi1UlEgOIc07Rfk2Jgb5fZbxDPec94
 
-![](yt.jpg)
+![](images/yt.jpg)
 
 ---
 
