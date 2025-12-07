@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  pwn-x86:
+    build: ./x86
+    container_name: pwn-challenge-x86
+    ports:
+      - "9001:9001"
+    restart: unless-stopped
+
+  pwn-x64:
+    build: ./x64
+    container_name: pwn-challenge-x64
+    ports:
+      - "9002:9002"
+    restart: unless-stopped
+
+  # Bore tunnel for x86 challenge
+  bore-x86:
+    image: alpine:latest
+    container_name: bore-tunnel-x86
+    depends_on:
+      - pwn-x86
+    command: >
+      sh -c "
+        apk add --no-cache curl tar &&
+        curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.1/bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz | tar xz -C /usr/local/bin &&
+        bore local 9001 --to bore.pub --local-host pwn-x86 --port 31337
+      "
+    restart: unless-stopped
+
+  # Bore tunnel for x64 challenge
+  bore-x64:
+    image: alpine:latest
+    container_name: bore-tunnel-x64
+    depends_on:
+      - pwn-x64
+    command: >
+      sh -c "
+        apk add --no-cache curl tar &&
+        curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.1/bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz | tar xz -C /usr/local/bin &&
+        bore local 9002 --to bore.pub --local-host pwn-x64 --port 31338
+      "
+    restart: unless-stopped
