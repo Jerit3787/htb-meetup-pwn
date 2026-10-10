@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Apple Silicon Setup Guide - HTB Meetup PWN</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    line-height: 1.55;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Header Banner */
+  .header {
+    background: linear-gradient(135deg, #0b1320 0%, #111e33 100%);
+    color: #ffffff;
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border-left: 6px solid #9fef00;
+  }
+
+  .header h1 {
+    margin: 0 0 6px 0;
+    font-size: 20pt;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .header .subtitle {
+    margin: 0 0 10px 0;
+    font-size: 11pt;
+    color: #9fef00;
+    font-weight: 600;
+  }
+
+  .header .meta {
+    font-size: 8.5pt;
+    color: #94a3b8;
+  }
+
+  h2 {
+    color: #0f172a;
+    font-size: 13pt;
+    margin-top: 22px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1.5px solid #e2e8f0;
+    font-weight: 700;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    color: #1e293b;
+    font-size: 10.5pt;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+
+  p {
+    margin: 6px 0 10px 0;
+  }
+
+  ul, ol {
+    margin: 6px 0 10px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+
+  /* Code blocks */
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 8.5pt;
+    line-height: 1.45;
+    overflow-x: auto;
+    margin: 8px 0 12px 0;
+    page-break-inside: avoid;
+    border: 1px solid #1e293b;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 8.5pt;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+  }
+
+  /* Diagrams & Callouts */
+  .diagram {
+    background: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+    font-family: ui-monospace, monospace;
+    font-size: 8.5pt;
+    line-height: 1.35;
+    color: #334155;
+  }
+
+  .alert {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  .alert-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .alert-warning {
+    background: #fefce8;
+    border-left-color: #ca8a04;
+  }
+  .alert-warning .alert-title {
+    color: #854d0e;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #e2e8f0;
+  }
+
+  th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    font-size: 7.5pt;
+    font-weight: 600;
+  }
+  .badge-htb {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 8pt;
+    color: #94a3b8;
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="subtitle">HACK THE BOX MEETUP • WORKSHOP GUIDE</div>
+  <h1>Apple Silicon Setup Guide (M1/M2/M3/M4)</h1>
+  <div class="meta">Lightweight Binary Exploitation (PWN) Workshop Setup • Host: macOS • Execution: Colima Linux (x86_64)</div>
+</div>
+
+<h2>1. Overview & Architecture</h2>
+<p>
+  Running full desktop Linux virtual machines (e.g. Kali Linux GUI inside VMware Fusion or UTM) under x86_64 emulation on Apple Silicon is extremely demanding: it consumes <strong>8GB+ RAM</strong>, <strong>40–50GB of disk space</strong>, and suffers from heavy cursor/GUI lag.
+</p>
+<p>
+  To solve this, we use a <strong>Lightweight Split Architecture</strong>:
+</p>
+
+<div class="diagram">
++---------------------------------------------------------------------------------+<br>
+|                          macOS Host (Apple Silicon)                             |<br>
+|                                                                                 |<br>
+|  • Ghidra (Native macOS GUI - Zero lag, native Retina resolution, fast decomp)  |<br>
+|  • Terminal & Code Editor (VS Code / Neovim)                                    |<br>
+|  • Python 3 + pwntools (Exploit scripts interact directly with local ports)     |<br>
++----------------------------------------+----------------------------------------+<br>
+                                         | Port Forwarding (localhost:9001, 9002)<br>
+                                         v<br>
++---------------------------------------------------------------------------------+<br>
+|                   Colima Headless Linux VM (QEMU x86_64)                        |<br>
+|                                                                                 |<br>
+|  • Headless Ubuntu 24.04 kernel (~2GB RAM, zero display overhead)               |<br>
+|  • Authentic x86 (32-bit) & x64 (64-bit) Linux ELF execution                    |<br>
+|  • Hosts Docker containers (pwn-challenge-x86 & pwn-challenge-x64)              |<br>
++---------------------------------------------------------------------------------+
+</div>
+
+<p>
+  <strong>Host OS:</strong> All reverse engineering and scripting happens natively on macOS.<br>
+  <strong>Colima:</strong> Linux is used <em>strictly for execution and containers</em>, keeping your system fast and responsive.
+</p>
+
+<h2>2. Prerequisites</h2>
+<p>Ensure you have <a href="https://brew.sh/">Homebrew</a> installed on macOS:</p>
+<pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+
+<h2>3. Step 1: Install Ghidra on macOS Host</h2>
+<p>
+  Installing Ghidra directly on macOS provides native hardware acceleration and seamless window management:
+</p>
+<pre><code># 1. Install Ghidra and its OpenJDK 21 dependency
+brew install ghidra
+
+# 2. Create a symlink so typing 'ghidra' launches it from any terminal
+ln -sf /opt/homebrew/bin/ghidraRun /opt/homebrew/bin/ghidra</code></pre>
+
+<div class="alert">
+  <div class="alert-title">✔ Verification</div>
+  Run <code>which ghidra</code> in your terminal. It should return <code>/opt/homebrew/bin/ghidra</code>. You can now launch Ghidra anytime simply by typing <code>ghidra</code>.
+</div>
+
+<h2>4. Step 2: Install Colima & QEMU x86_64</h2>
+<p>Install Colima and the required virtualization components via Homebrew:</p>
+<pre><code>brew install colima qemu lima lima-additional-guestagents docker docker-compose</code></pre>
+
+<div class="alert alert-warning">
+  <div class="alert-title">⚠ Important: Apple Silicon Lima Guest Agent Link</div>
+  On Apple Silicon, Lima only includes the ARM64 guest agent by default. The <code>lima-additional-guestagents</code> formula provides the x86_64 guest agent. Link it into Lima's Cellar directory:
+  <pre style="margin-top: 6px;"><code>ln -sf /opt/homebrew/share/lima/lima-guestagent.*.gz /opt/homebrew/Cellar/lima/*/share/lima/</code></pre>
+</div>
+
+<h2>5. Step 3: Launch Colima in x86_64 Mode</h2>
+<p>Start the lightweight x86_64 Linux environment:</p>
+<pre><code>colima start --arch x86_64 --vm-type qemu</code></pre>
+
+<p>Verify that your Docker CLI now communicates with an x86_64 Linux daemon:</p>
+<pre><code>$ colima status
+INFO[0000] colima is running using QEMU
+INFO[0000] arch: x86_64
+INFO[0000] runtime: docker
+
+$ docker info | grep Architecture
+ Architecture: x86_64</code></pre>
+
+<h2>6. Step 4: Clone the Workshop Repository</h2>
+<pre><code>git clone https://github.com/danishhakim/htb-meetup-pwn.git
+cd htb-meetup-pwn</code></pre>
+
+<h2>7. Step 5: Configure Python & Pwntools on macOS</h2>
+<p>Set up an isolated Python virtual environment on macOS to run exploit scripts:</p>
+<pre><code># 1. Create and activate virtual environment
+python3 -m venv ~/.pwn-env
+source ~/.pwn-env/bin/activate
+
+# 2. Install pwntools
+pip install --upgrade pwntools</code></pre>
+
+<h2>8. Step 6: Running & Exploiting Mini-CTF Challenges</h2>
+<p>The CTF challenges run inside Docker containers hosted by Colima, with network ports forwarded to <code>localhost</code>.</p>
+
+<h3>1. Start the Containers:</h3>
+<pre><code>cd mini-ctf
+docker compose up -d</code></pre>
+
+<h3>2. Extract Challenge Binaries:</h3>
+<p>Extract the compiled binaries to analyze them on your Mac:</p>
+<pre><code>chmod +x extract-binaries.sh
+./extract-binaries.sh</code></pre>
+<p>This creates <code>binaries/challenge_x86</code> and <code>binaries/challenge_x64</code>.</p>
+
+<h3>3. Reverse Engineer in Ghidra (macOS):</h3>
+<pre><code>ghidra &amp;</code></pre>
+<ol>
+  <li>Open Ghidra and create a new project.</li>
+  <li>Import <code>binaries/challenge_x86</code> and <code>binaries/challenge_x64</code>.</li>
+  <li>Identify buffer sizes, vulnerabilities, and target functions (e.g. <code>get_flag()</code>).</li>
+</ol>
+
+<h3>4. Execute Exploits from macOS:</h3>
+<p>Run the solve scripts natively from your macOS terminal:</p>
+<pre><code># Test the 64-bit challenge:
+python3 x64/solve.py
+# Output: 🚩 HTB{x64_st4ck_sm4sh1ng_pr0}
+
+# Test the 32-bit challenge:
+python3 x86/solve.py
+# Output: 🚩 HTB{x86_buff3r_0v3rfl0w_m4st3r}</code></pre>
+
+<h3>5. Tear Down:</h3>
+<p>When finished with the CTF:</p>
+<pre><code>docker compose down</code></pre>
+
+<h2>9. Step 7: Guided Hands-on Challenges</h2>
+<p>The guided practice challenges are located in <code>handson/</code>:</p>
+<pre><code># 1. Rebuild binaries (if needed) via Docker
+docker run --rm -v "$PWD:/workspace" -w /workspace test-x86 ./handson/build.sh
+
+# 2. Test hands-on solve scripts
+cd handson/x64
+python3 solve.py    # Output: FLAG{x64_r3t2w1n_b4s1cs}
+
+cd ../x86
+python3 solve.py    # Output: FLAG{x86_r3t2w1n_b4s1cs}</code></pre>
+
+<h2>10. Colima Lifecycle Management</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>colima stop</code></td>
+      <td>Pauses the x86_64 VM to conserve battery and CPU when not in use.</td>
+    </tr>
+    <tr>
+      <td><code>colima start</code></td>
+      <td>Resumes the instance with all saved state.</td>
+    </tr>
+    <tr>
+      <td><code>colima ssh</code></td>
+      <td>Opens an interactive bash terminal inside the x86_64 Ubuntu VM.</td>
+    </tr>
+    <tr>
+      <td><code>colima delete -f</code></td>
+      <td>Destroys the instance and frees all disk space.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>11. Troubleshooting Reference</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Error / Symptom</th>
+      <th>Root Cause</th>
+      <th>Resolution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>guest agent binary could not be found for Linux-x86_64</code></td>
+      <td>Lima lacks x86_64 guest agent on Apple Silicon.</td>
+      <td><code>brew install lima-additional-guestagents</code> and link into Cellar directory.</td>
+    </tr>
+    <tr>
+      <td><code>ghidra: command not found</code></td>
+      <td>Homebrew names the binary <code>ghidraRun</code>.</td>
+      <td><code>ln -sf /opt/homebrew/bin/ghidraRun /opt/homebrew/bin/ghidra</code></td>
+    </tr>
+    <tr>
+      <td><code>Cannot connect to Docker daemon</code></td>
+      <td>Colima stopped or wrong context.</td>
+      <td>Run <code>colima start</code> and <code>docker context use colima</code>.</td>
+    </tr>
+    <tr>
+      <td><code>ModuleNotFoundError: No module named 'pwn'</code></td>
+      <td>Python virtualenv not activated.</td>
+      <td>Run <code>source ~/.pwn-env/bin/activate</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  HTB Meetup IIUM • Binary Exploitation Workshop • Distributed for Apple Silicon Attendees
+</div>
+
+</body>
+</html>

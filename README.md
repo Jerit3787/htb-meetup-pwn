@@ -46,6 +46,8 @@ More realistic challenges running in Docker containers:
 - [Ghidra](https://ghidra-sre.org/) for reverse engineering
 
 > **Kali Linux users:** Run `scripts/install-tools.sh` to install all required tools.
+>
+> **Apple Silicon (macOS M1/M2/M3/M4) users:** See the lightweight setup guide: [docs/apple-silicon-setup.md](docs/apple-silicon-setup.md) (or [PDF](docs/apple-silicon-setup.pdf)) to run Ghidra natively on macOS and x86_64 execution via Colima without heavy virtual machines.
 
 ## Quick Start
 
