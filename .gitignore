@@ -1,0 +1,16 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Core dumps from segfaults
+core
+core.*
+*.core
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/

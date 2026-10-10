@@ -48,6 +48,16 @@ else
     }
 fi
 
+# Ensure typing 'gdb' also launches pwndbg directly
+if [ -x "/usr/local/bin/pwndbg" ]; then
+    sudo ln -sf /usr/local/bin/pwndbg /usr/local/bin/gdb
+fi
+
+# Disable debuginfod network stalls in GDB
+if ! grep -q "set debuginfod enabled off" "$HOME/.gdbinit" 2>/dev/null; then
+    echo "set debuginfod enabled off" >> "$HOME/.gdbinit"
+fi
+
 # 3. Pwntools
 echo ""
 echo "[*] Installing pwntools..."
