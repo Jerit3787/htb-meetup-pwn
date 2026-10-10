@@ -10,7 +10,9 @@ This repository contains hands-on challenges and a mini-CTF for learning buffer 
 
 ```
 ├── docs/            # Workshop materials
+│   ├── index.html          # Interactive browser slides & memory visualizer
 │   ├── preparation.md/pdf  # Setup guide for attendees
+│   ├── apple-silicon-setup.md/pdf # Apple Silicon setup guide
 │   └── slides.md/pdf       # Presentation slides
 │
 ├── handson/         # Guided practice challenges
@@ -22,7 +24,7 @@ This repository contains hands-on challenges and a mini-CTF for learning buffer 
 │   └── x86/         # 32-bit challenge with hidden flag
 │
 └── scripts/         # Helper scripts
-    └── install-tools.sh    # Install required tools on Kali
+    └── install-tools.sh    # Install required tools on Kali / Linux
 ```
 
 ## Challenges
@@ -48,6 +50,14 @@ More realistic challenges running in Docker containers:
 > **Kali Linux users:** Run `scripts/install-tools.sh` to install all required tools.
 >
 > **Apple Silicon (macOS M1/M2/M3/M4) users:** See the lightweight setup guide: [docs/apple-silicon-setup.md](docs/apple-silicon-setup.md) (or [PDF](docs/apple-silicon-setup.pdf)) to run Ghidra natively on macOS and x86_64 execution via Colima without heavy virtual machines.
+
+## Interactive Presentation & Slides
+
+An interactive, browser-based slide deck and memory visualizer is available in [`docs/index.html`](docs/index.html):
+- **Live Memory Layout Explorer**: Click and inspect Linux memory segments (Stack, Heap, BSS, Data, Text).
+- **Interactive Stack Frame Explorer**: Understand function call frames, caller vs callee, and memory growth.
+- **Real-Time Buffer Overflow Simulator**: Type or test presets to see memory corruption, segmentation faults, and ret2win control-flow hijacking live.
+- **Host it anywhere**: Open `docs/index.html` directly in any web browser, host via GitHub Pages, or serve locally with `python3 -m http.server 8000 -d docs`.
 
 ## Quick Start
 
