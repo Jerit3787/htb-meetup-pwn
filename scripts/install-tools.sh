@@ -64,14 +64,19 @@ echo "[*] Installing checksec..."
 sudo apt install -y checksec
 
 # 5. Ghidra Installation & Symlink Setup
-echo ""
-echo "[*] Installing Ghidra..."
+if [ "$1" = "--skip-ghidra" ] || [ "$SKIP_GHIDRA" = "1" ]; then
+    echo ""
+    echo "[*] Skipping Ghidra installation (using native Ghidra on macOS host)."
+    GHIDRA_INSTALLED=true
+else
+    echo ""
+    echo "[*] Installing Ghidra..."
 
-# Ensure Java (JDK 17+) required by Ghidra is present
-echo "[*] Ensuring OpenJDK is installed..."
-sudo apt install -y openjdk-17-jdk 2>/dev/null || sudo apt install -y default-jdk
+    # Ensure Java (JDK 17+) required by Ghidra is present
+    echo "[*] Ensuring OpenJDK is installed..."
+    sudo apt install -y openjdk-17-jdk 2>/dev/null || sudo apt install -y default-jdk
 
-GHIDRA_INSTALLED=false
+    GHIDRA_INSTALLED=false
 
 # Method A: Try installing via Kali's official apt repository
 if sudo apt install -y ghidra; then
@@ -136,6 +141,7 @@ Terminal=false
 Type=Application
 Categories=Development;ReverseEngineering;Security;
 EOF
+fi
 fi
 
 # 6. Verification Summary

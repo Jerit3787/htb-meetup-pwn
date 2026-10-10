@@ -4,254 +4,192 @@
 
 ---
 
-## 1. Overview & Architecture
+## 1. Overview & Concept
 
-### The Problem with Traditional Virtual Machines
-Running a full desktop Linux VM (such as Kali Linux GUI inside VMware Fusion or UTM) under x86_64 emulation on Apple Silicon is extremely heavy:
-- Consumes **8GB+ RAM** and **40–50GB disk space**.
-- Emulating an entire x86 desktop GUI results in mouse lag, display scaling artifacts, and high battery consumption.
-- Frustrating experience for attendees during live workshops.
+Instead of running a heavy virtual machine with a full desktop GUI (like Kali Linux inside VMware Fusion or UTM), which uses **8GB+ RAM** and lags under emulation, this guide uses a lightweight approach:
 
-### The Lightweight Split Architecture
-Instead of running a heavy virtual desktop, we split the workflow:
+1. **Host OS (macOS)**: Runs **Ghidra** natively with full Apple Silicon speed and no GUI lag.
+2. **Execution Environment (Colima)**: A headless, lightweight **x86_64 Linux VM** managed by Colima and QEMU (~2GB RAM).
+3. **Inside Colima (`colima ssh`)**: You do everything just like a **typical Kali Linux environment**—compiling with GCC, debugging with GDB + pwndbg, running CTF containers, and writing/running exploit scripts.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     macOS Host (Apple Silicon)                  │
-│                                                                 │
-│  • Ghidra (Native macOS GUI - Zero lag, fast decompiler)        │
-│  • Terminal, Text Editor (VS Code / Neovim)                     │
-│  • Python 3 + pwntools (Exploit scripts connect via network)   │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 │ Docker Port Forwarding
-                                 │ (localhost:9001 / 9002)
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│               Headless Colima Linux VM (QEMU x86_64)            │
-│                                                                 │
-│  • Lightweight headless Ubuntu 24.04 kernel (~2GB RAM)          │
-│  • Runs authentic x86 (32-bit) & x64 (64-bit) Linux ELFs        │
-│  • Hosts Docker containers (mini-ctf challenges)                │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-1. **Host OS (macOS)**: Runs **Ghidra natively** via Homebrew (blazing fast, native Retina display) and your exploit scripts.
-2. **Execution Environment (Colima)**: A minimal, headless **x86_64 Linux VM** managed by Colima and QEMU. It handles ELF binary execution and Docker containers with minimal resource overhead.
+Because Colima automatically shares your macOS filesystem, any file created on macOS is instantly accessible inside Colima (and vice versa) at the exact same file path.
 
 ---
 
-## 2. Prerequisites
+## 2. Phase 1: macOS Host Setup (Getting Colima & Ghidra Ready)
 
-Make sure you have [Homebrew](https://brew.sh/) installed on your Mac:
+Run the following commands in your **macOS Terminal**:
+
+### Step 1: Ensure Homebrew is Installed
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+which brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
----
-
-## 3. Step 1: Install Ghidra on macOS Host
-
-Install Ghidra directly on macOS so that reverse engineering runs natively with Apple Silicon performance:
-
+### Step 2: Install Ghidra on macOS Host
+Ghidra runs on macOS so reverse engineering is fast and responsive:
 ```bash
-# 1. Install Ghidra and its OpenJDK dependency
+# Install Ghidra and OpenJDK
 brew install ghidra
 
-# 2. Create a symlink so you can launch Ghidra by typing 'ghidra' in any terminal
+# Create a symlink so typing 'ghidra' launches it from terminal
 ln -sf /opt/homebrew/bin/ghidraRun /opt/homebrew/bin/ghidra
 ```
+*Verify by running `which ghidra`. It should return `/opt/homebrew/bin/ghidra`.*
 
-### Verification:
-```bash
-which ghidra
-# Output: /opt/homebrew/bin/ghidra
-```
-Now typing `ghidra` in your terminal will instantly open the Ghidra GUI.
-
----
-
-## 4. Step 2: Install & Configure Colima (x86_64)
-
-Install Colima, QEMU, Lima, and the Docker command-line tools:
-
+### Step 3: Install Colima, QEMU, and Lima
 ```bash
 brew install colima qemu lima lima-additional-guestagents docker docker-compose
 ```
 
 > [!IMPORTANT]
-> **Apple Silicon Lima Guest Agent Fix**
-> On ARM64 Macs, Lima installs only the ARM64 guest agent by default. The `lima-additional-guestagents` formula provides the x86_64 guest agent. Link it into Lima's Cellar directory so Lima finds it:
+> **Lima Guest Agent Symlink (Apple Silicon Fix)**
+> On Apple Silicon Macs, Lima only includes the ARM64 guest agent by default. The `lima-additional-guestagents` package provides the x86_64 agent. Link it into Lima's Cellar directory:
 > ```bash
 > ln -sf /opt/homebrew/share/lima/lima-guestagent.*.gz /opt/homebrew/Cellar/lima/*/share/lima/
 > ```
 
----
-
-## 5. Step 3: Start Colima in x86_64 Mode
-
-Start the headless x86_64 Linux instance:
-
+### Step 4: Start Colima in x86_64 Emulation Mode
 ```bash
 colima start --arch x86_64 --vm-type qemu
 ```
 
-### Verification:
-Check that the VM is running as `x86_64`:
+Verify that Colima is running with an x86_64 kernel:
 ```bash
 colima status
-# Expected output:
-# colima is running using QEMU
-# arch: x86_64
-# runtime: docker
-
-docker info | grep Architecture
-# Expected output:
-#  Architecture: x86_64
+# Shows: arch: x86_64, colima is running using QEMU
 ```
 
 ---
 
-## 6. Step 4: Clone the Workshop Repository
+## 3. Phase 2: Enter the Linux Environment (`colima ssh`)
 
-```bash
-git clone https://github.com/danishhakim/htb-meetup-pwn.git
-cd htb-meetup-pwn
-```
+Now, enter your headless x86_64 Linux environment:
 
----
-
-## 7. Step 5: Python & Pwntools on macOS Host
-
-To develop and test exploit scripts natively on your Mac:
-
-```bash
-# 1. Create a Python virtual environment
-python3 -m venv ~/.pwn-env
-
-# 2. Activate the virtual environment
-source ~/.pwn-env/activate
-
-# 3. Install pwntools
-pip install --upgrade pwntools
-```
-
-*(Tip: Add `alias pwn="source ~/.pwn-env/activate"` to your `~/.zshrc` for quick access).*
-
----
-
-## 8. Step 6: Running the Mini-CTF Challenges
-
-The CTF challenges run in Docker containers managed by Colima, while you interact with them from macOS.
-
-### 1. Start the CTF Containers:
-```bash
-cd mini-ctf
-docker compose up -d
-```
-
-### 2. Extract the Challenge Binaries:
-Run the extraction script to pull the compiled binaries from the containers:
-```bash
-chmod +x extract-binaries.sh
-./extract-binaries.sh
-```
-This copies:
-- `binaries/challenge_x86` (32-bit ELF)
-- `binaries/challenge_x64` (64-bit ELF)
-
-### 3. Reverse Engineer in Ghidra (macOS):
-In a new terminal window:
-```bash
-ghidra &
-```
-1. Create a new project in Ghidra.
-2. Drag and drop `binaries/challenge_x86` and `binaries/challenge_x64`.
-3. Analyze and locate the vulnerabilities and target functions (`get_flag()`).
-
-### 4. Solve the Challenges:
-The Docker containers forward their ports to your Mac host:
-- **x86 Challenge**: `127.0.0.1:9001`
-- **x64 Challenge**: `127.0.0.1:9002`
-
-Run the solve scripts:
-```bash
-# For x64 challenge:
-python3 x64/solve.py
-
-# For x86 challenge:
-python3 x86/solve.py
-```
-Both scripts will exploit the running containers on `localhost` and display the flags:
-- `🚩 HTB{x64_st4ck_sm4sh1ng_pr0}`
-- `🚩 HTB{x86_buff3r_0v3rfl0w_m4st3r}`
-
-### 5. Stop the Containers:
-When finished:
-```bash
-docker compose down
-```
-
----
-
-## 9. Step 7: Running the Hands-on Challenges
-
-The guided hands-on challenges are located in `handson/`:
-
-### Building Challenges (Inside x86_64 Linux Container):
-Because macOS cannot compile native Linux ELFs with GCC, use Docker via Colima:
-```bash
-docker run --rm -v "$PWD:/workspace" -w /workspace/handson test-x86 ./build.sh
-```
-Or enter the Colima VM shell directly:
 ```bash
 colima ssh
-cd /Users/<your-username>/.../htb-meetup-pwn/handson
-sudo apt update && sudo apt install -y build-essential gcc-multilib
-./build.sh
 ```
 
-### Running Hands-on Solves:
-```bash
-cd handson/x64
-python3 solve.py
-# FLAG{x64_r3t2w1n_b4s1cs}
+> [!TIP]
+> **You are now inside an x86_64 Ubuntu Linux environment!**
+> Everything from this point onward is done here, exactly like a Kali Linux terminal.
 
-cd ../x86
-python3 solve.py
-# FLAG{x86_r3t2w1n_b4s1cs}
+---
+
+## 4. Phase 3: Setup & Work Inside Colima (Like Typical Kali Linux)
+
+### Step 1: Navigate to the Repository
+Your macOS files are automatically mounted under `/Users/...`:
+```bash
+cd /Users/<your-username>/Documents/GitHub/htb-meetup-pwn
+# Or clone inside Colima if not already cloned:
+# git clone https://github.com/danishhakim/htb-meetup-pwn.git && cd htb-meetup-pwn
+```
+
+### Step 2: Install PWN Tools inside Colima
+Run the repo's tool installer (using `--skip-ghidra` since Ghidra is on your Mac):
+```bash
+chmod +x scripts/install-tools.sh
+./scripts/install-tools.sh --skip-ghidra
+```
+*This installs:*
+- `build-essential` and `gcc-multilib` (for 32-bit and 64-bit compilation)
+- `gdb` and `pwndbg` (for interactive debugging)
+- `python3`, `pip3`, and `pwntools`
+- `checksec`
+- `socat` and networking utilities
+
+---
+
+## 5. Phase 4: Compiling, Debugging & Testing Challenges
+
+Everything is tested directly inside your Colima terminal session:
+
+### Guided Hands-on Practice (`handson/`)
+```bash
+cd handson
+
+# 1. Compile both 32-bit and 64-bit challenges
+./build.sh
+
+# 2. Inspect with checksec
+checksec --file=x64/challenge
+checksec --file=x86/challenge
+
+# 3. Interactive Debugging with pwndbg
+gdb ./x64/challenge
+# pwndbg> r
+# pwndbg> cyclic 100
+
+# 4. Run the solve scripts
+cd x64 && python3 solve.py
+# Output: FLAG{x64_r3t2w1n_b4s1cs}
+
+cd ../x86 && python3 solve.py
+# Output: FLAG{x86_r3t2w1n_b4s1cs}
+```
+
+### Mini-CTF Docker Challenges (`mini-ctf/`)
+```bash
+cd /Users/<your-username>/Documents/GitHub/htb-meetup-pwn/mini-ctf
+
+# 1. Start the challenge containers
+docker compose up -d
+
+# 2. Extract challenge binaries for reversing
+./extract-binaries.sh
+
+# 3. Run solve scripts against local containers
+python3 x64/solve.py
+# Output: 🚩 HTB{x64_st4ck_sm4sh1ng_pr0}
+
+python3 x86/solve.py
+# Output: 🚩 HTB{x86_buff3r_0v3rfl0w_m4st3r}
 ```
 
 ---
 
-## 10. Managing Colima
+## 6. Phase 5: Reversing with Ghidra (macOS Host)
 
-When you are done with the workshop, stop Colima to free CPU and battery:
+Whenever you need to inspect or disassemble a binary:
+1. Open a **new terminal tab on your macOS host** (outside Colima).
+2. Launch Ghidra:
+   ```bash
+   ghidra
+   ```
+3. Open or import the binary directly from your repository folder (e.g. `handson/x64/challenge` or `mini-ctf/binaries/challenge_x86`).
+4. Find the target function address (`win()` or `get_flag()`) and buffer size.
+5. Switch back to your `colima ssh` terminal to write the exploit and debug!
+
+---
+
+## 7. Useful Colima Commands (on macOS Host)
+
+When you are done with the workshop:
 ```bash
+# Exit Colima shell back to macOS
+exit
+
+# Stop Colima VM to save battery
 colima stop
-```
 
-To resume at any time:
-```bash
+# Resume Colima anytime
 colima start
-```
 
-To delete the VM and reclaim disk space:
-```bash
+# Delete Colima VM and free disk space
 colima delete -f
 ```
 
 ---
 
-## 11. Quick Troubleshooting
+## 8. Troubleshooting Cheat Sheet
 
-| Issue | Cause | Solution |
+| Issue | Where | Solution |
 |---|---|---|
-| `guest agent binary could not be found for Linux-x86_64` | Lima missing x86_64 agent on Apple Silicon. | Run `brew install lima-additional-guestagents` and symlink to `/opt/homebrew/Cellar/lima/*/share/lima/`. |
-| `Cannot connect to Docker daemon` | Colima is stopped or Docker context is wrong. | Run `colima start` and `docker context use colima`. |
-| `ghidra: command not found` | Formula installs as `ghidraRun`. | Run `ln -sf /opt/homebrew/bin/ghidraRun /opt/homebrew/bin/ghidra`. |
-| `ModuleNotFoundError: No module named 'pwn'` | Python virtual environment not active. | Run `source ~/.pwn-env/activate`. |
-| Port conflict on 9001 / 9002 | Another service using port. | Check with `lsof -i :9001` or change ports in `docker-compose.yml`. |
+| `guest agent binary could not be found for Linux-x86_64` | macOS | Run `brew install lima-additional-guestagents` and link: `ln -sf /opt/homebrew/share/lima/lima-guestagent.*.gz /opt/homebrew/Cellar/lima/*/share/lima/` |
+| `ghidra: command not found` | macOS | Run `ln -sf /opt/homebrew/bin/ghidraRun /opt/homebrew/bin/ghidra` |
+| Cannot find repository inside Colima | Colima | Path is identical to macOS: `cd /Users/<your-username>/...` |
+| GDB doesn't load pwndbg | Colima | Run `echo "source /usr/local/lib/pwndbg-gdb/gdbinit.py" >> ~/.gdbinit` |
+| `ModuleNotFoundError: No module named 'pwn'` | Colima | Run `pip3 install pwntools --break-system-packages` |
 
 ---
 **Happy Hacking! 🚩**
