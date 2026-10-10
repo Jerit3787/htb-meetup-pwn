@@ -36,24 +36,21 @@ We are going to use a Kali Linux, if you do not have it yet, you can download us
 
 Once Kali Linux is running, follow these steps to install the required tools:
 
-### Step 1: Transfer the Script
+### Step 1: Transfer or Clone the Script
 
-**Clone/Download directly in Kali**
-1. Open a terminal in Kali and clone the gist:
-   ```bash
-   git clone https://gist.github.com/Jerit3787/2cda2b3a62517109cb8f50e5a2254a62.git htb-tools
-   cd htb-tools
-   ```
-
-### Step 2: Make the Script Executable
-
+**Option A: Clone this repository directly in Kali (Recommended)**
 ```bash
-chmod +x install-htb-tools.sh
+git clone https://github.com/danishhakim/htb-meetup-pwn.git
+cd htb-meetup-pwn
+chmod +x scripts/install-tools.sh
+./scripts/install-tools.sh
 ```
 
-### Step 3: Run the Script
-
+**Option B: Clone via standalone Gist**
 ```bash
+git clone https://gist.github.com/Jerit3787/2cda2b3a62517109cb8f50e5a2254a62.git htb-tools
+cd htb-tools
+chmod +x install-htb-tools.sh
 ./install-htb-tools.sh
 ```
 

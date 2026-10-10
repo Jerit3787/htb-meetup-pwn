@@ -51,13 +51,13 @@ More realistic challenges running in Docker containers:
 
 ```bash
 # Build challenges
-cd handons && ./build.sh
-cd mini-ctf && docker-compose up -d
+cd handson && ./build.sh
+cd ../mini-ctf && docker-compose up -d
 
 # Try the x64 hands-on
-cd handons/x64
+cd ../handson/x64
 ./challenge
-python solve.py
+python3 solve.py
 ```
 
 ## Learning Objectives

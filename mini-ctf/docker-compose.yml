@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   pwn-x86:
+    platform: linux/amd64
     build: ./x86
     container_name: pwn-challenge-x86
     ports:
@@ -9,6 +10,7 @@ services:
     restart: unless-stopped
 
   pwn-x64:
+    platform: linux/amd64
     build: ./x64
     container_name: pwn-challenge-x64
     ports:
@@ -17,6 +19,7 @@ services:
 
   # Bore tunnel for x86 challenge
   bore-x86:
+    platform: linux/amd64
     image: alpine:latest
     container_name: bore-tunnel-x86
     depends_on:
@@ -31,6 +34,7 @@ services:
 
   # Bore tunnel for x64 challenge
   bore-x64:
+    platform: linux/amd64
     image: alpine:latest
     container_name: bore-tunnel-x64
     depends_on:
